@@ -1,33 +1,79 @@
+export interface TargetStudent {
+  name: string;
+  disability: string;
+  currentLevel: string;
+  goals: string;
+  accommodations: string;
+}
+
+export interface Activity {
+  phase: string;
+  time: number;
+  activity: string;
+  materials: string;
+  notes?: string;
+}
+
 export interface LessonPlan {
   id: string;
   title: string;
   subject: string;
   grade: string;
-  duration: string;
-  date: string;
-  objectives: string;
-  materials: string;
-  studentNeeds: string;
-  accommodations: string;
-  activities: {
-    introduction: string;
-    development: string;
-    conclusion: string;
-  };
-  assessment: string;
-  reflection: string;
+  duration: number;
+  learningObjectives: string[];
+  targetStudents: TargetStudent[];
+  teachingMethods: string[];
+  materials: string[];
+  activities: Activity[];
+  assessmentMethods: string[];
+  accommodations: string[];
+  notes: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const STORAGE_KEY = 'special-education-lesson-plans';
+
+interface SerializedLessonPlan {
+  id: string;
+  title: string;
+  subject: string;
+  grade: string;
+  duration: number;
+  learningObjectives: string[];
+  targetStudents: TargetStudent[];
+  teachingMethods: string[];
+  materials: string[];
+  activities: Activity[];
+  assessmentMethods: string[];
+  accommodations: string[];
+  notes: string;
   createdAt: string;
   updatedAt: string;
 }
 
-const STORAGE_KEY = 'special-education-lesson-plans';
+// Helper function to serialize dates
+const serializeLessonPlan = (plan: LessonPlan): SerializedLessonPlan => ({
+  ...plan,
+  createdAt: plan.createdAt.toISOString(),
+  updatedAt: plan.updatedAt.toISOString()
+});
+
+// Helper function to deserialize dates
+const deserializeLessonPlan = (data: SerializedLessonPlan): LessonPlan => ({
+  ...data,
+  createdAt: new Date(data.createdAt),
+  updatedAt: new Date(data.updatedAt)
+});
 
 export const storage = {
   getAllPlans: (): LessonPlan[] => {
     if (typeof window === 'undefined') return [];
     try {
       const data = localStorage.getItem(STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
+      if (!data) return [];
+      const rawPlans = JSON.parse(data);
+      return rawPlans.map(deserializeLessonPlan);
     } catch (error) {
       console.error('Error getting lesson plans:', error);
       return [];
@@ -38,7 +84,7 @@ export const storage = {
     if (typeof window === 'undefined') throw new Error('Storage not available');
     
     const plans = storage.getAllPlans();
-    const now = new Date().toISOString();
+    const now = new Date();
     const newPlan: LessonPlan = {
       ...plan,
       id: crypto.randomUUID(),
@@ -47,7 +93,8 @@ export const storage = {
     };
     
     plans.push(newPlan);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
+    const serializedPlans = plans.map(serializeLessonPlan);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedPlans));
     return newPlan;
   },
 
@@ -62,11 +109,12 @@ export const storage = {
     const updatedPlan: LessonPlan = {
       ...plans[planIndex],
       ...updates,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date(),
     };
     
     plans[planIndex] = updatedPlan;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
+    const serializedPlans = plans.map(serializeLessonPlan);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedPlans));
     return updatedPlan;
   },
 
@@ -78,7 +126,8 @@ export const storage = {
     
     if (filteredPlans.length === plans.length) return false;
     
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredPlans));
+    const serializedPlans = filteredPlans.map(serializeLessonPlan);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedPlans));
     return true;
   },
 
@@ -89,17 +138,19 @@ export const storage = {
 
   exportPlans: (): string => {
     const plans = storage.getAllPlans();
-    return JSON.stringify(plans, null, 2);
+    return JSON.stringify(plans.map(serializeLessonPlan), null, 2);
   },
 
   importPlans: (jsonData: string): boolean => {
     if (typeof window === 'undefined') throw new Error('Storage not available');
     
     try {
-      const importedPlans: LessonPlan[] = JSON.parse(jsonData);
+      const importedPlans: SerializedLessonPlan[] = JSON.parse(jsonData);
       const existingPlans = storage.getAllPlans();
-      const allPlans = [...existingPlans, ...importedPlans];
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(allPlans));
+      const deserializedImported = importedPlans.map(deserializeLessonPlan);
+      const allPlans = [...existingPlans, ...deserializedImported];
+      const serializedPlans = allPlans.map(serializeLessonPlan);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedPlans));
       return true;
     } catch (error) {
       console.error('Error importing plans:', error);
@@ -111,4 +162,29 @@ export const storage = {
     if (typeof window === 'undefined') throw new Error('Storage not available');
     localStorage.removeItem(STORAGE_KEY);
   }
+};
+
+// Export individual functions for compatibility with new features
+export const loadLessonPlan = (id: string): LessonPlan | null => {
+  return storage.getPlan(id);
+};
+
+export const saveLessonPlan = (plan: LessonPlan): void => {
+  if (typeof window === 'undefined') throw new Error('Storage not available');
+  
+  const plans = storage.getAllPlans();
+  const existingIndex = plans.findIndex(p => p.id === plan.id);
+  
+  if (existingIndex !== -1) {
+    plans[existingIndex] = { ...plan, updatedAt: new Date() };
+  } else {
+    plans.push(plan);
+  }
+  
+  const serializedPlans = plans.map(serializeLessonPlan);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedPlans));
+};
+
+export const getAllLessonPlans = (): LessonPlan[] => {
+  return storage.getAllPlans();
 };

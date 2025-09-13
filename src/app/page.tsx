@@ -28,12 +28,20 @@ export default function Home() {
           <p className="text-lg text-gray-600 mb-8">
             특수교육전공자를 위한 체계적인 수업지도안 작성 및 관리 플랫폼
           </p>
-          <Link
-            href="/create"
-            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg"
-          >
-            새 수업지도안 작성
-          </Link>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Link
+              href="/create"
+              className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-lg"
+            >
+              새 수업지도안 작성
+            </Link>
+            <Link
+              href="/examples"
+              className="inline-block bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-lg"
+            >
+              예시 및 템플릿 보기
+            </Link>
+          </div>
         </header>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
@@ -66,6 +74,36 @@ export default function Home() {
             <h3 className="text-xl font-semibold text-gray-800 mb-2">쉬운 관리</h3>
             <p className="text-gray-600">작성된 수업지도안을 체계적으로 저장하고 관리할 수 있습니다.</p>
           </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m0-8v8m0-8h2a2 2 0 012 2v6a2 2 0 01-2 2H9m0-8V5zm0 8v-2m0 2h2" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">실제 예시 제공</h3>
+            <p className="text-gray-600">초보자를 위한 완성된 수업지도안 예시와 교과별 템플릿을 제공합니다.</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">전문가 평가</h3>
+            <p className="text-gray-600">AI 기반 전문가 평가로 수업지도안의 질을 향상시킬 수 있습니다.</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">필수 체크리스트</h3>
+            <p className="text-gray-600">놓치기 쉬운 필수 요소들을 체크리스트로 확인할 수 있습니다.</p>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-8">
@@ -91,23 +129,37 @@ export default function Home() {
                 <div key={plan.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                   <h3 className="font-semibold text-gray-800">{plan.title}</h3>
                   <p className="text-gray-600 text-sm mt-1">{plan.subject} • {plan.grade}</p>
-                  <p className="text-gray-500 text-xs mt-2 line-clamp-2">{plan.objectives}</p>
+                  <p className="text-gray-500 text-xs mt-2 line-clamp-2">
+                    {plan.learningObjectives?.[0] || '학습목표 없음'}
+                  </p>
                   <div className="flex justify-between items-center mt-3">
                     <span className="text-xs text-gray-500">
-                      {new Date(plan.date).toLocaleDateString('ko-KR')}
+                      {plan.createdAt ? new Date(plan.createdAt).toLocaleDateString('ko-KR') : '날짜 없음'}
                     </span>
-                    <div className="flex gap-2">
-                      <Link
-                        href={`/edit/${plan.id}`}
-                        className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-                      >
-                        수정하기
-                      </Link>
+                    <div className="flex flex-wrap gap-2">
                       <Link
                         href={`/view/${plan.id}`}
                         className="text-green-600 hover:text-green-700 text-sm font-medium"
                       >
                         보기
+                      </Link>
+                      <Link
+                        href={`/edit/${plan.id}`}
+                        className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                      >
+                        수정
+                      </Link>
+                      <Link
+                        href={`/evaluate/${plan.id}`}
+                        className="text-purple-600 hover:text-purple-700 text-sm font-medium"
+                      >
+                        평가
+                      </Link>
+                      <Link
+                        href={`/checklist/${plan.id}`}
+                        className="text-orange-600 hover:text-orange-700 text-sm font-medium"
+                      >
+                        체크
                       </Link>
                       <button
                         onClick={() => handleDeletePlan(plan.id)}
