@@ -66,7 +66,51 @@ export default function CreateLessonPlan() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      storage.savePlan(formData);
+      // Convert old format to new format
+      const newFormatPlan = {
+        title: formData.title,
+        subject: formData.subject,
+        grade: formData.grade,
+        duration: parseInt(formData.duration) || 40,
+        learningObjectives: formData.objectives ? formData.objectives.split('\n').filter(obj => obj.trim()) : ['학습목표를 입력해주세요'],
+        targetStudents: [{
+          name: '학생명',
+          disability: '장애유형',
+          currentLevel: formData.studentNeeds || '현재 수준을 입력해주세요',
+          goals: '개별 목표를 설정해주세요',
+          accommodations: formData.accommodations || '지원 계획을 입력해주세요'
+        }],
+        teachingMethods: ['개별화 교육', '체계적 교수법'],
+        materials: formData.materials ? formData.materials.split('\n').filter(mat => mat.trim()) : ['교구를 입력해주세요'],
+        activities: [
+          {
+            phase: '도입',
+            time: 10,
+            activity: formData.activities.introduction || '도입 활동을 입력해주세요',
+            materials: '',
+            notes: ''
+          },
+          {
+            phase: '전개',
+            time: 20,
+            activity: formData.activities.development || '전개 활동을 입력해주세요',
+            materials: '',
+            notes: ''
+          },
+          {
+            phase: '정리',
+            time: 10,
+            activity: formData.activities.conclusion || '정리 활동을 입력해주세요',
+            materials: '',
+            notes: ''
+          }
+        ],
+        assessmentMethods: formData.assessment ? formData.assessment.split('\n').filter(method => method.trim()) : ['평가방법을 입력해주세요'],
+        accommodations: formData.accommodations ? formData.accommodations.split('\n').filter(acc => acc.trim()) : ['지원 계획을 입력해주세요'],
+        notes: formData.reflection || '특이사항을 입력해주세요'
+      };
+      
+      storage.savePlan(newFormatPlan);
       alert("수업지도안이 저장되었습니다!");
       router.push('/');
     } catch (error) {

@@ -99,10 +99,10 @@ export default function ViewLessonPlan() {
               <div className="text-center border-b pb-6">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">{plan.title}</h1>
                 <div className="text-lg text-gray-600">
-                  {plan.subject} • {plan.grade} • {plan.duration}
+                  {plan.subject} • {plan.grade} • {plan.duration}분
                 </div>
                 <div className="text-gray-500 mt-2">
-                  수업 날짜: {new Date(plan.date).toLocaleDateString('ko-KR')}
+                  작성일: {plan.createdAt ? new Date(plan.createdAt).toLocaleDateString('ko-KR') : '날짜 없음'}
                 </div>
               </div>
 
@@ -110,35 +110,57 @@ export default function ViewLessonPlan() {
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">학습 목표</h3>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.objectives}</p>
+                    <ul className="space-y-1">
+                      {plan.learningObjectives?.map((objective, index) => (
+                        <li key={index} className="text-gray-700">• {objective}</li>
+                      )) || <li className="text-gray-500">학습목표 없음</li>}
+                    </ul>
                   </div>
 
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">준비물 및 교구</h3>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.materials || "없음"}</p>
+                    <ul className="space-y-1">
+                      {plan.materials?.map((material, index) => (
+                        <li key={index} className="text-gray-700">• {material}</li>
+                      )) || <li className="text-gray-500">교구 없음</li>}
+                    </ul>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">학생의 특별한 요구사항</h3>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.studentNeeds}</p>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">대상 학생 정보</h3>
+                    {plan.targetStudents?.map((student, index) => (
+                      <div key={index} className="bg-gray-50 p-3 rounded">
+                        <p className="text-gray-700"><strong>장애:</strong> {student.disability}</p>
+                        <p className="text-gray-700"><strong>현재 수준:</strong> {student.currentLevel}</p>
+                        <p className="text-gray-700"><strong>목표:</strong> {student.goals}</p>
+                      </div>
+                    )) || <p className="text-gray-500">학생 정보 없음</p>}
                   </div>
                 </div>
 
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">교육적 지원 및 조정사항</h3>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.accommodations}</p>
+                    <ul className="space-y-1">
+                      {plan.accommodations?.map((accommodation, index) => (
+                        <li key={index} className="text-gray-700">• {accommodation}</li>
+                      )) || <li className="text-gray-500">지원 계획 없음</li>}
+                    </ul>
                   </div>
 
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">평가 방법 및 기준</h3>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.assessment}</p>
+                    <ul className="space-y-1">
+                      {plan.assessmentMethods?.map((method, index) => (
+                        <li key={index} className="text-gray-700">• {method}</li>
+                      )) || <li className="text-gray-500">평가방법 없음</li>}
+                    </ul>
                   </div>
 
-                  {plan.reflection && (
+                  {plan.notes && (
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">수업 후 반성 및 개선점</h3>
-                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.reflection}</p>
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">특이사항 및 참고</h3>
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.notes}</p>
                     </div>
                   )}
                 </div>
@@ -148,20 +170,35 @@ export default function ViewLessonPlan() {
                 <h3 className="text-xl font-bold text-gray-800 border-b pb-3">수업 활동</h3>
                 
                 <div className="grid gap-6">
-                  <div className="bg-blue-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-semibold text-blue-800 mb-3">도입 활동</h4>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.activities.introduction}</p>
-                  </div>
-
-                  <div className="bg-green-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-semibold text-green-800 mb-3">전개 활동</h4>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.activities.development}</p>
-                  </div>
-
-                  <div className="bg-purple-50 p-6 rounded-lg">
-                    <h4 className="text-lg font-semibold text-purple-800 mb-3">정리 활동</h4>
-                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{plan.activities.conclusion}</p>
-                  </div>
+                  {plan.activities?.map((activity, index) => (
+                    <div key={index} className={`p-6 rounded-lg ${
+                      activity.phase === '도입' ? 'bg-blue-50' :
+                      activity.phase === '전개' ? 'bg-green-50' :
+                      activity.phase === '정리' ? 'bg-purple-50' : 'bg-gray-50'
+                    }`}>
+                      <div className="flex justify-between items-center mb-3">
+                        <h4 className={`text-lg font-semibold ${
+                          activity.phase === '도입' ? 'text-blue-800' :
+                          activity.phase === '전개' ? 'text-green-800' :
+                          activity.phase === '정리' ? 'text-purple-800' : 'text-gray-800'
+                        }`}>
+                          {activity.phase} 활동
+                        </h4>
+                        <span className="text-sm text-gray-600">{activity.time}분</span>
+                      </div>
+                      <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">{activity.activity}</p>
+                      {activity.materials && (
+                        <p className="text-sm text-gray-600 mt-2">교구: {activity.materials}</p>
+                      )}
+                      {activity.notes && (
+                        <p className="text-sm text-gray-500 mt-1">참고: {activity.notes}</p>
+                      )}
+                    </div>
+                  )) || (
+                    <div className="bg-gray-50 p-6 rounded-lg text-center">
+                      <p className="text-gray-500">수업 활동 정보가 없습니다.</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
