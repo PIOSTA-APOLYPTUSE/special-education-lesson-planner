@@ -16,27 +16,31 @@ export default function ChecklistPage() {
   useEffect(() => {
     const id = params.id as string;
     if (id) {
-      const plan = loadLessonPlan(id);
-      if (plan) {
-        setLessonPlan(plan);
-        const checklistResult = checkLessonPlan(plan);
-        setChecklist(checklistResult);
-        // 필수 항목이 미완료인 카테고리는 자동으로 확장
-        const categorizedItems = getChecklistByCategory();
-        const categoriesToExpand = new Set<string>();
-        
-        Object.entries(categorizedItems).forEach(([category, items]) => {
-          const hasIncompleteRequired = items.some(item => {
-            if (!item.required) return false;
-            const result = checklistResult.results.find(r => r.itemId === item.id);
-            return result && !result.completed;
+      try {
+        const plan = loadLessonPlan(id);
+        if (plan) {
+          setLessonPlan(plan);
+          const checklistResult = checkLessonPlan(plan);
+          setChecklist(checklistResult);
+          // 필수 항목이 미완료인 카테고리는 자동으로 확장
+          const categorizedItems = getChecklistByCategory();
+          const categoriesToExpand = new Set<string>();
+          
+          Object.entries(categorizedItems).forEach(([category, items]) => {
+            const hasIncompleteRequired = items.some(item => {
+              if (!item.required) return false;
+              const result = checklistResult.results.find(r => r.itemId === item.id);
+              return result && !result.completed;
+            });
+            if (hasIncompleteRequired) {
+              categoriesToExpand.add(category);
+            }
           });
-          if (hasIncompleteRequired) {
-            categoriesToExpand.add(category);
-          }
-        });
-        
-        setExpandedCategories(categoriesToExpand);
+          
+          setExpandedCategories(categoriesToExpand);
+        }
+      } catch (error) {
+        console.error('Error loading lesson plan for checklist:', error);
       }
       setLoading(false);
     }

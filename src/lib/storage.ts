@@ -60,11 +60,28 @@ const serializeLessonPlan = (plan: LessonPlan): SerializedLessonPlan => ({
 });
 
 // Helper function to deserialize dates
-const deserializeLessonPlan = (data: SerializedLessonPlan): LessonPlan => ({
-  ...data,
-  createdAt: new Date(data.createdAt),
-  updatedAt: new Date(data.updatedAt)
-});
+const deserializeLessonPlan = (data: SerializedLessonPlan): LessonPlan => {
+  // Provide defaults for missing properties
+  const plan: LessonPlan = {
+    id: data.id || '',
+    title: data.title || '',
+    subject: data.subject || '',
+    grade: data.grade || '',
+    duration: data.duration || 40,
+    learningObjectives: data.learningObjectives || [],
+    targetStudents: data.targetStudents || [],
+    teachingMethods: data.teachingMethods || [],
+    materials: data.materials || [],
+    activities: data.activities || [],
+    assessmentMethods: data.assessmentMethods || [],
+    accommodations: data.accommodations || [],
+    notes: data.notes || '',
+    createdAt: data.createdAt ? new Date(data.createdAt) : new Date(),
+    updatedAt: data.updatedAt ? new Date(data.updatedAt) : new Date()
+  };
+  
+  return plan;
+};
 
 export const storage = {
   getAllPlans: (): LessonPlan[] => {
@@ -73,7 +90,16 @@ export const storage = {
       const data = localStorage.getItem(STORAGE_KEY);
       if (!data) return [];
       const rawPlans = JSON.parse(data);
-      return rawPlans.map(deserializeLessonPlan);
+      // Validate and convert data
+      if (!Array.isArray(rawPlans)) return [];
+      return rawPlans.map(plan => {
+        try {
+          return deserializeLessonPlan(plan);
+        } catch (error) {
+          console.error('Error deserializing plan:', error);
+          return null;
+        }
+      }).filter(Boolean) as LessonPlan[];
     } catch (error) {
       console.error('Error getting lesson plans:', error);
       return [];

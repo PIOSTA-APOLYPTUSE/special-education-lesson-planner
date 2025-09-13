@@ -15,11 +15,15 @@ export default function EvaluatePage() {
   useEffect(() => {
     const id = params.id as string;
     if (id) {
-      const plan = loadLessonPlan(id);
-      if (plan) {
-        setLessonPlan(plan);
-        const evalResult = evaluateLessonPlan(plan);
-        setEvaluation(evalResult);
+      try {
+        const plan = loadLessonPlan(id);
+        if (plan) {
+          setLessonPlan(plan);
+          const evalResult = evaluateLessonPlan(plan);
+          setEvaluation(evalResult);
+        }
+      } catch (error) {
+        console.error('Error loading lesson plan for evaluation:', error);
       }
       setLoading(false);
     }

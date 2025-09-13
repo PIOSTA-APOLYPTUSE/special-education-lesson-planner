@@ -8,7 +8,12 @@ export default function Home() {
   const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
 
   useEffect(() => {
-    setLessonPlans(storage.getAllPlans());
+    try {
+      setLessonPlans(storage.getAllPlans());
+    } catch (error) {
+      console.error('Failed to load lesson plans:', error);
+      setLessonPlans([]);
+    }
   }, []);
 
   const handleDeletePlan = (id: string) => {
