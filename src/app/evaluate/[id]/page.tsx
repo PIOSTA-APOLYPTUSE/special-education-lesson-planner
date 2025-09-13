@@ -177,9 +177,54 @@ export default function EvaluatePage() {
                     <p className="text-sm text-gray-700">{result.feedback}</p>
                   </div>
 
+                  {/* 평가 근거 */}
+                  {result.evidence && result.evidence.length > 0 && (
+                    <div className="bg-blue-50 rounded-lg p-3 mb-3">
+                      <h4 className="font-medium text-blue-800 mb-2">📊 평가 근거</h4>
+                      <ul className="space-y-1">
+                        {result.evidence.map((evidence, idx) => (
+                          <li key={idx} className="text-sm text-blue-700 flex items-start">
+                            <span className="mr-2">{evidence.includes('✓') ? '✅' : '❌'}</span>
+                            {evidence.replace(/^[✓✗]\s*/, '')}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* 현재 내용 */}
+                  {result.currentContent && (
+                    <div className="bg-purple-50 rounded-lg p-3 mb-3">
+                      <h4 className="font-medium text-purple-800 mb-2">📝 현재 작성 내용</h4>
+                      <div className="text-sm text-purple-700 whitespace-pre-wrap bg-white rounded p-2 border">
+                        {result.currentContent || '내용이 작성되지 않았습니다.'}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 모범 답안 */}
+                  {result.modelAnswer && (
+                    <div className="bg-green-50 rounded-lg p-3 mb-3">
+                      <h4 className="font-medium text-green-800 mb-2">✨ 모범 답안 예시</h4>
+                      <div className="text-sm text-green-700 whitespace-pre-wrap bg-white rounded p-2 border">
+                        {result.modelAnswer}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 구체적 개선 예시 */}
+                  {result.improvementExample && (
+                    <div className="bg-orange-50 rounded-lg p-3 mb-3">
+                      <h4 className="font-medium text-orange-800 mb-2">🔧 구체적 개선 예시</h4>
+                      <div className="text-sm text-orange-700 whitespace-pre-wrap bg-white rounded p-2 border">
+                        {result.improvementExample}
+                      </div>
+                    </div>
+                  )}
+
                   {result.suggestions.length > 0 && (
                     <div className="bg-yellow-50 rounded-lg p-3">
-                      <h4 className="font-medium text-yellow-800 mb-2">개선 제안</h4>
+                      <h4 className="font-medium text-yellow-800 mb-2">💡 개선 제안</h4>
                       <ul className="space-y-1">
                         {result.suggestions.map((suggestion, idx) => (
                           <li key={idx} className="text-sm text-yellow-700 flex items-start">
