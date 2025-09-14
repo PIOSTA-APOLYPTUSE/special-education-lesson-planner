@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { exampleLessonPlans, fullCurriculumStructure, ExampleLessonPlan } from '@/lib/examples';
 import { saveLessonPlan } from '@/lib/storage';
 import { useRouter } from 'next/navigation';
+import { generateLessonPlan } from '@/lib/lessonPlanGenerator';
 
 export default function ExamplesPage() {
   const [selectedExample, setSelectedExample] = useState<string | null>(null);
@@ -75,6 +76,42 @@ export default function ExamplesPage() {
 
       saveLessonPlan(newPlan);
       router.push(`/edit/${newPlan.id}`);
+    }
+  };
+
+  const handleGenerateLessonPlan = () => {
+    if (gradeFilter === 'all' || subjectFilter === 'all' || unitFilter === 'all') {
+      alert('지도안 생성을 위해 학년, 교과목, 세부 단원을 모두 선택해주세요.');
+      return;
+    }
+
+    if (disabilityTypeFilter === 'all' || disabilitySeverityFilter === 'all') {
+      alert('지도안 생성을 위해 장애 유형과 장애 정도를 모두 선택해주세요.');
+      return;
+    }
+
+    try {
+      const generatedPlan = generateLessonPlan({
+        grade: gradeFilter,
+        subject: subjectFilter,
+        unit: unitFilter,
+        disabilityType: disabilityTypeFilter,
+        disabilitySeverity: disabilitySeverityFilter as '경도' | '중도' | '중증',
+        difficulty: difficultyFilter === 'all' ? 'intermediate' : difficultyFilter as 'basic' | 'intermediate' | 'advanced'
+      });
+
+      const newPlan = {
+        ...generatedPlan,
+        id: `generated-${Date.now()}`,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+
+      saveLessonPlan(newPlan);
+      router.push(`/edit/${newPlan.id}`);
+    } catch (error) {
+      console.error('Error generating lesson plan:', error);
+      alert('지도안 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -209,16 +246,73 @@ export default function ExamplesPage() {
                 </div>
               </div>
             </div>
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-sm text-gray-600">
-                총 {filteredExamples.length}개의 예시가 있습니다.
-              </span>
-              <button
-                onClick={resetFilters}
-                className="text-sm text-blue-600 hover:text-blue-800"
-              >
-                전체 필터 초기화
-              </button>
+            <div className="mt-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">
+                  총 {filteredExamples.length}개의 예시가 있습니다.
+                </span>
+                <button
+                  onClick={resetFilters}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  전체 필터 초기화
+                </button>
+              </div>
+
+              {/* AI 지도안 생성 버튼 */}
+              <div className="border-t pt-4">
+                <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                        <span className="text-2xl mr-2">🤖</span>
+                        AI 맞춤 지도안 생성
+                      </h4>
+                      <p className="text-sm text-gray-600 mb-3">
+                        선택한 필터 조건에 맞는 새로운 수업지도안을 AI가 자동으로 생성해드립니다.
+                      </p>
+                      <div className="text-xs text-gray-500 space-y-1">
+                        {gradeFilter !== 'all' && (
+                          <div>✓ 학년: {gradeFilter}</div>
+                        )}
+                        {subjectFilter !== 'all' && (
+                          <div>✓ 교과목: {subjectFilter}</div>
+                        )}
+                        {unitFilter !== 'all' && (
+                          <div>✓ 세부 단원: {unitFilter}</div>
+                        )}
+                        {disabilityTypeFilter !== 'all' && (
+                          <div>✓ 장애 유형: {disabilityTypeFilter}</div>
+                        )}
+                        {disabilitySeverityFilter !== 'all' && (
+                          <div>✓ 장애 정도: {disabilitySeverityFilter}</div>
+                        )}
+                        {difficultyFilter !== 'all' && (
+                          <div>✓ 난이도: {difficultyFilter === 'basic' ? '기본' : difficultyFilter === 'intermediate' ? '중급' : '고급'}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="ml-4">
+                      <button
+                        onClick={handleGenerateLessonPlan}
+                        disabled={gradeFilter === 'all' || subjectFilter === 'all' || unitFilter === 'all' || disabilityTypeFilter === 'all' || disabilitySeverityFilter === 'all'}
+                        className={`px-6 py-3 rounded-lg font-medium text-sm transition-colors ${
+                          gradeFilter === 'all' || subjectFilter === 'all' || unitFilter === 'all' || disabilityTypeFilter === 'all' || disabilitySeverityFilter === 'all'
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg'
+                        }`}
+                      >
+                        🚀 지도안 생성하기
+                      </button>
+                    </div>
+                  </div>
+                  {(gradeFilter === 'all' || subjectFilter === 'all' || unitFilter === 'all' || disabilityTypeFilter === 'all' || disabilitySeverityFilter === 'all') && (
+                    <div className="mt-3 text-xs text-orange-600">
+                      ⚠️ 지도안 생성을 위해 필수 항목(학년, 교과목, 세부 단원, 장애 유형, 장애 정도)을 모두 선택해주세요.
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
