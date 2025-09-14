@@ -96,6 +96,7 @@ export default function ExamplesPage() {
         subject: subjectFilter,
         unit: unitFilter,
         disabilityType: disabilityTypeFilter,
+        disability: disabilityTypeFilter, // disability와 disabilityType 동일하게 설정
         disabilitySeverity: disabilitySeverityFilter as '경도' | '중도' | '중증',
         difficulty: difficultyFilter === 'all' ? 'intermediate' : difficultyFilter as 'basic' | 'intermediate' | 'advanced'
       });

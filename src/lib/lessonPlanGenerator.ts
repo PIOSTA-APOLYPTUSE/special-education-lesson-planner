@@ -5,6 +5,7 @@ interface GenerationParams {
   subject: string;
   unit: string;
   disabilityType: string;
+  disability: string;
   disabilitySeverity: '경도' | '중도' | '중증';
   difficulty: 'basic' | 'intermediate' | 'advanced';
 }
@@ -474,71 +475,276 @@ function generateLearningObjectives(params: GenerationParams): string[] {
   return adjustedObjectives.slice(0, 3); // 3개로 제한
 }
 
-// 수업 활동 생성 (매우 구체적)
+// 수업 활동 생성 (매우 구체적이고 실무적)
 function generateActivities(params: GenerationParams): Array<{phase: string; time: number; activity: string; materials: string; notes?: string}> {
-  const { subject, unit, disabilitySeverity, difficulty } = params;
+  const { subject, unit, disability, disabilitySeverity, difficulty } = params;
 
   const baseDuration = disabilitySeverity === '중증' ? 25 : disabilitySeverity === '중도' ? 30 : 40;
   const activitySet = subjectStructures[subject]?.activities[unit];
+  const materials = subjectStructures[subject]?.materials[unit] || [];
 
-  if (!activitySet) {
-    return [
-      {
-        phase: '도입',
-        time: Math.round(baseDuration * 0.2),
-        activity: `${unit} 관련 경험 나누고 학습 동기 유발하기`,
-        materials: '시각 자료, 교구',
-        notes: '학생의 사전 경험과 연결하여 흥미 유발'
+  // 장애별 특화 교수법 적용 (활동 생성에 반영됨)
+
+  // 활동 시간 배분
+  const introTime = Math.round(baseDuration * 0.2);
+  const developTime = Math.round(baseDuration * 0.6);
+  const consolidationTime = baseDuration - introTime - developTime;
+
+  // 구체적 활동 생성
+  const activities = [];
+
+  // 도입 활동 (매우 구체적)
+  const introActivity = generateDetailedIntroActivity(subject, unit, disability, disabilitySeverity);
+  activities.push({
+    phase: '도입',
+    time: introTime,
+    activity: introActivity.activity,
+    materials: introActivity.materials,
+    notes: introActivity.notes
+  });
+
+  // 전개 활동 (매우 구체적)
+  const developActivity = generateDetailedDevelopActivity(subject, unit, disability, disabilitySeverity);
+  activities.push({
+    phase: '전개',
+    time: developTime,
+    activity: developActivity.activity,
+    materials: developActivity.materials,
+    notes: developActivity.notes
+  });
+
+  // 정리 활동 (매우 구체적)
+  const consolidationActivity = generateDetailedConsolidationActivity(subject, unit, disability, disabilitySeverity);
+  activities.push({
+    phase: '정리',
+    time: consolidationTime,
+    activity: consolidationActivity.activity,
+    materials: consolidationActivity.materials,
+    notes: consolidationActivity.notes
+  });
+
+  return activities;
+}
+
+// 도입 활동 세부 생성
+function generateDetailedIntroActivity(subject: string, unit: string, disability: string, severity: string): {activity: string; materials: string; notes: string} {
+  const baseActivities: {[key: string]: {[key: string]: {activity: string; materials: string; notes: string}}} = {
+    '수학': {
+      '수와 연산': {
+        activity: '1) 인사 및 출석 확인 (3분)\n2) 오늘의 날짜와 날씨를 수로 표현해보기 (2분)\n3) 구체물(과자, 블록 등)을 이용해 자유롭게 세어보기 (3분)\n4) "오늘은 수의 세계로 여행을 떠날 거예요" 학습 동기 유발 (2분)',
+        materials: '과자, 색깔 블록, 숫자 카드, 달력, 날씨판, 동기유발용 PPT',
+        notes: '학생의 흥미를 끌 수 있는 구체물 사용, 일상생활과 연결된 수 경험 제공'
       },
-      {
-        phase: '전개',
-        time: Math.round(baseDuration * 0.6),
-        activity: `${unit}의 핵심 개념을 단계별로 학습하고 실습하기`,
-        materials: '학습 교구, 활동지',
-        notes: '학생 수준에 맞는 개별화된 접근'
-      },
-      {
-        phase: '정리',
-        time: Math.round(baseDuration * 0.2),
-        activity: '학습 내용 정리하고 다음 차시 예고하기',
-        materials: '정리 활동지, 보상 스티커',
-        notes: '성취감 향상을 위한 긍정적 피드백'
+      '도형': {
+        activity: '1) "도형 친구들을 찾아라" 노래 부르며 시작 (2분)\n2) 교실 안에서 동그라미, 세모, 네모 모양 찾아보기 (4분)\n3) 촉감상자에서 도형 블록 만져보고 특징 말하기 (4분)',
+        materials: '도형 블록, 촉감상자, 도형 노래 음원, 교실 내 도형 모양 스티커',
+        notes: '다감각적 접근으로 도형의 특성을 체험할 수 있도록 구성'
       }
-    ];
+    },
+    '국어': {
+      '듣기·말하기': {
+        activity: '1) 좋아하는 음식 이름을 큰 소리로 말해보기 (2분)\n2) 친구의 목소리를 듣고 누구인지 맞춰보기 (3분)\n3) 다양한 소리(동물, 자연, 교통수단)를 들려주고 따라하기 (4분)\n4) "오늘은 말하기 전문가가 될 거예요" 동기유발 (1분)',
+        materials: '다양한 소리 CD, 음향기기, 동물 그림카드, 마이크 모형',
+        notes: '학생의 음성 모방 능력과 청취 능력을 파악하여 개별 수준 확인'
+      },
+      '읽기': {
+        activity: '1) 좋아하는 책을 가져와서 표지 보여주기 (3분)\n2) 큰 그림책을 함께 보며 그림 속 이야기 추측하기 (4분)\n3) 자신의 이름 글자를 찾아보고 손으로 써보기 (3분)',
+        materials: '대형 그림책, 개인별 이름카드, 화이트보드, 색깔 마커',
+        notes: '문자에 대한 관심과 읽기 준비도를 확인하고 개별 수준 파악'
+      }
+    },
+    '사회': {
+      '나와 우리': {
+        activity: '1) 자신의 사진을 보며 "나는 누구일까요?" 퀴즈 (3분)\n2) 가족 사진을 보여주며 가족 구성원 소개하기 (4분)\n3) 친구들과 손잡고 원 만들기, 서로 인사하기 (3분)',
+        materials: '개인 사진, 가족 사진, 인사말 카드, 배경음악',
+        notes: '자아 정체성과 소속감을 느낄 수 있도록 따뜻한 분위기 조성'
+      }
+    },
+    '과학': {
+      '물질': {
+        activity: '1) 신기한 마술상자에서 여러 가지 물건 꺼내기 (3분)\n2) 물건들을 만져보고 딱딱한지 부드러운지 느껴보기 (4분)\n3) "과학자가 되어 물질의 비밀을 알아볼까요?" 동기유발 (3분)',
+        materials: '마술상자, 다양한 질감의 물건들(솜, 돌, 나무, 플라스틱), 과학자 가운, 돋보기',
+        notes: '호기심을 자극하는 신기한 상황 설정으로 과학적 탐구 동기 부여'
+      }
+    },
+    '체육': {
+      '건강': {
+        activity: '1) 건강 체조 음악에 맞춰 몸풀기 (3분)\n2) 거울을 보며 자신의 몸 부위 확인하고 만져보기 (3분)\n3) "건강한 하루 보내기" 체크리스트 함께 읽어보기 (4분)',
+        materials: '전신거울, 건강 체조 음악, 건강 체크리스트, 스트레칭 매트',
+        notes: '신체에 대한 긍정적 인식과 건강한 생활습관의 중요성 인식'
+      }
+    }
+  };
+
+  const result = baseActivities[subject]?.[unit] || {
+    activity: `${unit} 관련 흥미로운 자료를 제시하고 학습 동기를 유발하는 활동 진행`,
+    materials: '시각자료, 조작교구, 멀티미디어 자료',
+    notes: '학생의 관심과 참여를 이끌어내는 활동으로 구성'
+  };
+
+  // 장애별 세부 조정
+  if (disability === '지적장애') {
+    if (severity === '중증') {
+      result.activity = result.activity.replace(/\d+분/g, (match) => `${Math.ceil(parseInt(match) * 1.5)}분`);
+      result.notes += ', 충분한 시간과 반복적 설명 제공';
+    }
+  } else if (disability === '자폐스펙트럼장애') {
+    result.notes += ', 예측 가능한 구조화된 환경과 시각적 일정표 활용';
+    result.materials += ', 시각적 일정표, 감각 조절 도구';
+  } else if (disability === 'ADHD') {
+    result.notes += ', 짧은 집중 시간을 고려한 활발한 활동과 즉각적 피드백';
+    result.materials += ', 집중력 보조도구, 타이머';
   }
 
-  const materials = subjectStructures[subject]?.materials[unit] || ['교구', '활동지'];
+  return result;
+}
 
-  return [
-    {
-      phase: '도입',
-      time: Math.round(baseDuration * 0.25),
-      activity: activitySet.introduction[Math.floor(Math.random() * activitySet.introduction.length)],
-      materials: materials.slice(0, 2).join(', '),
-      notes: disabilitySeverity === '중증' ? '충분한 시간을 두고 천천히 진행' : '학생의 흥미와 참여를 이끌어내는 것이 중요'
+// 전개 활동 세부 생성
+function generateDetailedDevelopActivity(subject: string, unit: string, disability: string, severity: string): {activity: string; materials: string; notes: string} {
+  const baseActivities: {[key: string]: {[key: string]: {activity: string; materials: string; notes: string}}} = {
+    '수학': {
+      '수와 연산': {
+        activity: '1) 1-10까지 구체물로 세기 (5분)\n2) 숫자 카드와 구체물 짝짓기 활동 (7분)\n3) "숫자 찾기 게임" - 교실에 숨겨진 숫자 찾아서 순서대로 배열하기 (8분)\n4) 워크시트로 숫자 쓰기 연습 (4분)\n5) "나는 몇 살일까요?" 자신의 나이 표현하기 (4분)',
+        materials: '1-10 구체물, 숫자 카드, 숨겨진 숫자판, 워크시트, 색연필, 개인별 사진',
+        notes: '단계적 난이도 조절, 개별 학생의 수준에 맞는 과제 제시, 성공 경험 제공'
+      },
+      '도형': {
+        activity: '1) 도형 블록으로 자유롭게 만들기 활동 (6분)\n2) 도형별 특징 찾아보기 - 꼭짓점, 변의 개수 세기 (6분)\n3) "도형 변신 게임" - 몸으로 도형 만들어보기 (6분)\n4) 도형 퍼즐 맞추기 (6분)',
+        materials: '다양한 도형 블록, 도형 특징 차트, 바닥용 도형 테이프, 도형 퍼즐',
+        notes: '체험 중심 활동으로 도형의 성질을 자연스럽게 이해, 협력 학습 기회 제공'
+      }
     },
-    {
-      phase: '전개 1',
-      time: Math.round(baseDuration * 0.35),
-      activity: activitySet.development[Math.floor(Math.random() * activitySet.development.length)],
-      materials: materials.slice(2, 5).join(', '),
-      notes: disabilitySeverity === '중도' ? '단계를 세분화하여 차근차근 진행' : '개별 속도에 맞춰 유연하게 조정'
+    '국어': {
+      '듣기·말하기': {
+        activity: '1) 짝과 함께 자기소개하기 (5분)\n2) 그림을 보고 상황 설명하기 (7분)\n3) "내가 좋아하는 것" 발표하기 (8분)\n4) 친구의 말을 듣고 질문하기 (6분)\n5) 역할놀이로 인사말 연습하기 (6분)',
+        materials: '상황 그림카드, 발표용 마이크, 역할놀이 소품, 칭찬 스티커',
+        notes: '말하기에 자신감을 가질 수 있도록 격려, 적극적인 듣기 자세 강화'
+      },
+      '읽기': {
+        activity: '1) 글자 카드로 단어 만들기 (6분)\n2) 그림과 글자 연결하기 (6분)\n3) 간단한 문장 소리내어 읽기 (8분)\n4) 읽은 내용에 대해 그림으로 표현하기 (6분)\n5) "책 속 주인공 되어보기" 역할 놀이 (6분)',
+        materials: '글자 카드, 그림-글자 매칭 교구, 쉬운 읽기책, 그림 도구, 역할놀이 의상',
+        notes: '문자 해독과 의미 이해의 연결, 읽기의 즐거움을 경험할 수 있는 활동'
+      }
     },
-    {
-      phase: '전개 2',
-      time: Math.round(baseDuration * 0.25),
-      activity: activitySet.development[Math.floor(Math.random() * activitySet.development.length)],
-      materials: materials.slice(-3).join(', '),
-      notes: difficulty === 'advanced' ? '심화 활동으로 확장 가능' : '성공 경험을 통한 자신감 향상에 중점'
+    '사회': {
+      '나와 우리': {
+        activity: '1) 가족 소개 발표하기 (6분)\n2) "우리 가족의 하루" 순서 맞추기 (6분)\n3) 친구들과 공통점과 차이점 찾기 (8분)\n4) "도움을 주고받아요" 역할놀이 (8분)\n5) 감사 인사 표현하기 (4분)',
+        materials: '가족 사진, 생활 순서 카드, 비교 차트, 역할놀이 상황카드, 감사 카드',
+        notes: '자아 정체성 확립과 타인에 대한 이해와 존중, 사회성 기술 습득'
+      }
     },
-    {
-      phase: '정리',
-      time: Math.round(baseDuration * 0.15),
-      activity: activitySet.consolidation[Math.floor(Math.random() * activitySet.consolidation.length)],
-      materials: '학습 정리지, 포트폴리오, 보상 스티커',
-      notes: '학습 성과를 인정하고 다음 학습에 대한 동기 부여'
+    '과학': {
+      '물질': {
+        activity: '1) 여러 물질을 직접 만지고 특징 기록하기 (8분)\n2) 물질 분류하기 - 딱딱한 것/부드러운 것 (6분)\n3) 물의 상태 변화 관찰하기 - 얼음→물→수증기 (8분)\n4) "물질 탐정이 되어보자" - 숨겨진 물질의 정체 맞추기 (6분)\n5) 생활 속 물질 활용 사례 찾기 (4분)',
+        materials: '다양한 재질 샘플, 분류 상자, 얼음, 투명 용기, 핫플레이트, 관찰 기록지',
+        notes: '안전 수칙 준수, 직접 체험을 통한 과학적 사고력 신장, 일상생활 연계'
+      }
+    },
+    '체육': {
+      '건강': {
+        activity: '1) 바른 자세 만들기 연습 (6분)\n2) 기본 체조 동작 익히기 (8분)\n3) "건강한 음식 vs 해로운 음식" 분류 게임 (6분)\n4) 개인 위생 실습하기 - 올바른 손 씻기 (6분)\n5) "나만의 건강 다짐" 만들기 (6분)',
+        materials: '자세 교정 의자, 체조 음악, 음식 그림카드, 손 씻기 시설, 다짐 카드',
+        notes: '건강한 습관 형성, 실생활 적용 가능한 활동, 지속적인 실천 동기 부여'
+      }
     }
-  ];
+  };
+
+  const result = baseActivities[subject]?.[unit] || {
+    activity: `${unit}의 핵심 내용을 단계적으로 학습하고 다양한 활동을 통해 깊이 있게 탐구하는 시간`,
+    materials: '주요 교구, 활동지, 실습 도구',
+    notes: '학생 참여 중심의 체험 활동으로 구성, 개별 수준을 고려한 차별화 지도'
+  };
+
+  // 장애별 세부 조정
+  if (disability === '지적장애') {
+    if (severity === '중증') {
+      result.activity = result.activity.replace(/\d+분/g, (match) => `${Math.ceil(parseInt(match) * 1.3)}분`);
+      result.notes += ', 단순하고 구체적인 과제로 세분화, 충분한 연습 시간 제공';
+    } else if (severity === '중도') {
+      result.notes += ', 시각적 단서와 구체적 예시 활용, 단계별 피드백 제공';
+    }
+  } else if (disability === '자폐스펙트럼장애') {
+    result.notes += ', 구조화된 활동 순서와 명확한 지시, 감각적 자극 조절';
+    result.materials += ', 활동 순서표, 감각 조절 도구';
+  } else if (disability === 'ADHD') {
+    result.notes += ', 활동적이고 변화있는 과제, 즉시적 보상과 격려';
+    result.materials += ', 집중력 향상 도구, 보상 차트';
+  }
+
+  return result;
+}
+
+// 정리 활동 세부 생성
+function generateDetailedConsolidationActivity(subject: string, unit: string, disability: string, severity: string): {activity: string; materials: string; notes: string} {
+  const baseActivities: {[key: string]: {[key: string]: {activity: string; materials: string; notes: string}}} = {
+    '수학': {
+      '수와 연산': {
+        activity: '1) 오늘 배운 숫자들을 함께 큰 소리로 세어보기 (2분)\n2) "숫자 송" 부르며 율동하기 (3분)\n3) 오늘의 학습 소감 한 마디씩 발표하기 (2분)\n4) 집에서 할 수 있는 숫자 놀이 소개하기 (2분)\n5) 다음 시간 예고 및 마무리 인사 (1분)',
+        materials: '숫자 송 음원, 가정 연계 활동지, 소감 발표용 마이크',
+        notes: '학습 내용 정리와 성취감 경험, 가정 연계로 지속적 학습 유도'
+      },
+      '도형': {
+        activity: '1) 오늘 만난 도형 친구들 이름 불러보기 (2분)\n2) 도형으로 작품 만들고 친구들에게 소개하기 (4분)\n3) "도형 찾기 미션" - 다음 시간까지 집에서 도형 3개 찾아오기 (2분)\n4) 도형 스티커로 출석부 꾸미며 마무리 (2분)',
+        materials: '도형 스티커, 작품 전시 공간, 가정 연계 미션지',
+        notes: '창의적 표현 기회 제공, 학습 연계성 강화를 위한 과제 부여'
+      }
+    },
+    '국어': {
+      '듣기·말하기': {
+        activity: '1) 오늘 가장 기억에 남는 말하기 경험 공유하기 (3분)\n2) "칭찬 릴레이" - 친구의 좋은 점 말하기 (4분)\n3) 오늘 배운 인사말로 서로 인사하기 (2분)\n4) 집에 가서 가족들께 배운 내용 말해보기 약속 (1분)',
+        materials: '칭찬 카드, 인사말 포스터, 가정 연계 안내지',
+        notes: '언어 사용의 즐거움 체험, 자신감 향상과 사회적 기술 강화'
+      },
+      '읽기': {
+        activity: '1) 오늘 읽은 책의 가장 재미있었던 부분 그림으로 그리기 (3분)\n2) 그림을 보며 친구들에게 이야기해주기 (3분)\n3) "독서왕 스티커" 받고 독서 통장에 기록하기 (2분)\n4) 다음에 읽고 싶은 책 선택하기 (2분)',
+        materials: '그림 도구, 독서 통장, 독서왕 스티커, 다양한 책들',
+        notes: '읽기에 대한 긍정적 경험과 지속적인 독서 동기 부여'
+      }
+    },
+    '사회': {
+      '나와 우리': {
+        activity: '1) "고마워요 카드" 작성하여 서로 전달하기 (3분)\n2) 오늘 느낀 소중함에 대해 한 마디씩 나누기 (3분)\n3) 가족과 함께 할 수 있는 활동 계획하기 (2분)\n4) "우리는 모두 소중해요" 구호 함께 외치며 마무리 (2분)',
+        materials: '감사 카드, 가족 활동 계획표, 구호 포스터',
+        notes: '감사와 배려의 마음 함양, 가족 관계 증진을 위한 실천 의지 다지기'
+      }
+    },
+    '과학': {
+      '물질': {
+        activity: '1) "과학자 일지"에 오늘 관찰한 내용 그림과 글로 기록하기 (4분)\n2) 친구들과 신기했던 발견 공유하기 (3분)\n3) 집에서 찾아볼 물질 탐구 과제 안내 (2분)\n4) "우리는 모두 과학자" 다짐하며 실험복 정리하기 (1분)',
+        materials: '과학자 일지, 색연필, 가정 연계 과제지, 실험복',
+        notes: '과학적 사고력 정리, 탐구하는 자세와 과학에 대한 흥미 지속'
+      }
+    },
+    '체육': {
+      '건강': {
+        activity: '1) 오늘 배운 건강 습관 체크리스트 확인하기 (2분)\n2) "건강 다짐송" 함께 부르며 스트레칭 (3분)\n3) 일주일 건강 실천 계획표 작성하기 (3분)\n4) 건강한 몸과 마음으로 마무리 인사 (2분)',
+        materials: '건강 체크리스트, 다짐송 음원, 실천 계획표, 건강 캐릭터 스티커',
+        notes: '건강한 생활습관 다짐과 지속적 실천 동기 강화'
+      }
+    }
+  };
+
+  const result = baseActivities[subject]?.[unit] || {
+    activity: '학습 내용을 정리하고 느낀 점을 공유하며 다음 학습에 대한 기대감 조성',
+    materials: '정리용 활동지, 발표 도구',
+    notes: '성취감과 만족감을 느낄 수 있도록 긍정적 마무리'
+  };
+
+  // 장애별 세부 조정
+  if (disability === '지적장애') {
+    if (severity === '중증') {
+      result.activity = result.activity.replace(/\d+분/g, (match) => `${Math.ceil(parseInt(match) * 1.2)}분`);
+      result.notes += ', 간단하고 반복적인 정리, 충분한 칭찬과 격려';
+    }
+  } else if (disability === '자폐스펙트럼장애') {
+    result.notes += ', 예측 가능한 마무리 루틴, 안정감을 주는 정리 활동';
+    result.materials += ', 마무리 의식용 도구';
+  } else if (disability === 'ADHD') {
+    result.notes += ', 활동적인 마무리, 즉각적인 성취감과 보상';
+    result.materials += ', 성취 보상 스티커, 활동적 마무리 도구';
+  }
+
+  return result;
 }
 
 // 교수 방법 생성 (구체적)
