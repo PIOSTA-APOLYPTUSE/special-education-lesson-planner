@@ -6,21 +6,112 @@ import { storage, LessonPlan } from "@/lib/storage";
 
 export default function Home() {
   const [lessonPlans, setLessonPlans] = useState<LessonPlan[]>([]);
+  const [filteredPlans, setFilteredPlans] = useState<LessonPlan[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [subjectFilter, setSubjectFilter] = useState('all');
+  const [gradeFilter, setGradeFilter] = useState('all');
 
   useEffect(() => {
     try {
-      setLessonPlans(storage.getAllPlans());
+      const plans = storage.getAllPlans();
+      setLessonPlans(plans);
+      setFilteredPlans(plans);
     } catch (error) {
       console.error('Failed to load lesson plans:', error);
       setLessonPlans([]);
+      setFilteredPlans([]);
     }
   }, []);
 
+  useEffect(() => {
+    let filtered = lessonPlans;
+
+    // 검색어 필터링
+    if (searchTerm) {
+      filtered = filtered.filter(plan =>
+        plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        plan.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        plan.grade.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // 과목 필터링
+    if (subjectFilter !== 'all') {
+      filtered = filtered.filter(plan => plan.subject === subjectFilter);
+    }
+
+    // 학년 필터링
+    if (gradeFilter !== 'all') {
+      filtered = filtered.filter(plan => plan.grade === gradeFilter);
+    }
+
+    setFilteredPlans(filtered);
+  }, [lessonPlans, searchTerm, subjectFilter, gradeFilter]);
+
+  // 고유한 과목과 학년 목록 추출
+  const subjects = [...new Set(lessonPlans.map(plan => plan.subject))];
+  const grades = [...new Set(lessonPlans.map(plan => plan.grade))];
+
   const handleDeletePlan = (id: string) => {
     if (confirm("정말로 이 수업지도안을 삭제하시겠습니까?")) {
-      storage.deletePlan(id);
-      setLessonPlans(storage.getAllPlans());
+      try {
+        const success = storage.deletePlan(id);
+        if (success) {
+          const updatedPlans = storage.getAllPlans();
+          setLessonPlans(updatedPlans);
+          setFilteredPlans(updatedPlans);
+        } else {
+          alert('수업지도안 삭제에 실패했습니다.');
+        }
+      } catch (error) {
+        console.error('Error deleting plan:', error);
+        alert('수업지도안 삭제 중 오류가 발생했습니다.');
+      }
     }
+  };
+
+  const handleExportPlans = () => {
+    try {
+      const exportData = storage.exportPlans();
+      const blob = new Blob([exportData], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `lesson-plans-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error exporting plans:', error);
+      alert('내보내기 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleImportPlans = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const jsonData = e.target?.result as string;
+        const success = storage.importPlans(jsonData);
+
+        if (success) {
+          const updatedPlans = storage.getAllPlans();
+          setLessonPlans(updatedPlans);
+          setFilteredPlans(updatedPlans);
+          alert('수업지도안을 성공적으로 가져왔습니다.');
+        } else {
+          alert('가져오기에 실패했습니다. 파일을 확인해주세요.');
+        }
+      } catch (error) {
+        console.error('Error importing plans:', error);
+        alert('가져오기 중 오류가 발생했습니다.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   return (
@@ -46,6 +137,27 @@ export default function Home() {
             >
               예시 및 템플릿 보기
             </Link>
+
+            {/* 내보내기/가져오기 버튼 */}
+            {lessonPlans.length > 0 && (
+              <>
+                <button
+                  onClick={handleExportPlans}
+                  className="inline-block bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors shadow-lg"
+                >
+                  내보내기
+                </button>
+                <label className="inline-block bg-orange-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors shadow-lg cursor-pointer">
+                  가져오기
+                  <input
+                    type="file"
+                    accept=".json"
+                    onChange={handleImportPlans}
+                    className="hidden"
+                  />
+                </label>
+              </>
+            )}
           </div>
         </header>
 
@@ -112,8 +224,82 @@ export default function Home() {
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">최근 작성된 수업지도안</h2>
-          {lessonPlans.length === 0 ? (
+          <h2 className="text-2xl font-bold text-gray-800 mb-6">나의 수업지도안</h2>
+
+          {/* 검색 및 필터링 섹션 */}
+          {lessonPlans.length > 0 && (
+            <div className="mb-8 space-y-4">
+              <div className="flex flex-wrap gap-4">
+                {/* 검색 */}
+                <div className="flex-1 min-w-[300px]">
+                  <input
+                    type="text"
+                    placeholder="수업지도안 제목, 과목, 학년으로 검색..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                {/* 과목 필터 */}
+                <div className="min-w-[150px]">
+                  <select
+                    value={subjectFilter}
+                    onChange={(e) => setSubjectFilter(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="all">전체 과목</option>
+                    {subjects.map((subject) => (
+                      <option key={subject} value={subject}>{subject}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 학년 필터 */}
+                <div className="min-w-[150px]">
+                  <select
+                    value={gradeFilter}
+                    onChange={(e) => setGradeFilter(e.target.value)}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="all">전체 학년</option>
+                    {grades.map((grade) => (
+                      <option key={grade} value={grade}>{grade}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* 결과 인사 */}
+              <div className="flex items-center justify-between text-sm text-gray-600">
+                <span>총 {filteredPlans.length}개의 수업지도안</span>
+                {(searchTerm || subjectFilter !== 'all' || gradeFilter !== 'all') && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      setSubjectFilter('all');
+                      setGradeFilter('all');
+                    }}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    필터 초기화
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {filteredPlans.length === 0 && lessonPlans.length > 0 ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-700 mb-2">검색 결과가 없습니다</h3>
+              <p className="text-gray-500">다른 검색어나 필터를 사용해 보세요.</p>
+            </div>
+          ) : lessonPlans.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +316,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid gap-4">
-              {lessonPlans.map((plan) => (
+              {filteredPlans.map((plan) => (
                 <div key={plan.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                   <h3 className="font-semibold text-gray-800">{plan.title}</h3>
                   <p className="text-gray-600 text-sm mt-1">{plan.subject} • {plan.grade}</p>

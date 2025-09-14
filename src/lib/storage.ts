@@ -169,11 +169,29 @@ export const storage = {
 
   importPlans: (jsonData: string): boolean => {
     if (typeof window === 'undefined') throw new Error('Storage not available');
-    
+
     try {
       const importedPlans: SerializedLessonPlan[] = JSON.parse(jsonData);
+      if (!Array.isArray(importedPlans)) {
+        console.error('Invalid data format: expected array');
+        return false;
+      }
+
       const existingPlans = storage.getAllPlans();
-      const deserializedImported = importedPlans.map(deserializeLessonPlan);
+      const deserializedImported = importedPlans.map(plan => {
+        try {
+          return deserializeLessonPlan(plan);
+        } catch (error) {
+          console.error('Error deserializing imported plan:', error);
+          return null;
+        }
+      }).filter(Boolean) as LessonPlan[];
+
+      if (deserializedImported.length === 0) {
+        console.error('No valid plans found in import data');
+        return false;
+      }
+
       const allPlans = [...existingPlans, ...deserializedImported];
       const serializedPlans = allPlans.map(serializeLessonPlan);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(serializedPlans));

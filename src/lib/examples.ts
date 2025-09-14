@@ -77,14 +77,14 @@ export const disabilityLevels = {
 export const exampleLessonPlans: ExampleLessonPlan[] = [
   {
     id: 'example-1',
-    title: '수와 연산 기초 학습 - 1~10 숫자 인식',
+    title: '중등 1학년 수학 - 1~10 숫자 인식 및 세기',
     subject: '수학',
     curriculumArea: {
       category: '기본교육과정',
       domain: '수와 연산',
       subject: '수학'
     },
-    grade: '초등 1-3학년 (발달지연)',
+    grade: '중1',
     duration: 40,
     learningObjectives: [
       '1부터 10까지의 숫자를 시각적으로 인식할 수 있다',
@@ -169,14 +169,14 @@ export const exampleLessonPlans: ExampleLessonPlan[] = [
   },
   {
     id: 'example-2',
-    title: '일상생활 기능 - 양치질 순서 익히기',
-    subject: '실과',
+    title: '중등 1학년 일상생활활동 - 양치질 순서 익히기',
+    subject: '일상생활 활동',
     curriculumArea: {
       category: '기본교육과정',
-      domain: '생활 자원과 환경',
-      subject: '실과'
+      domain: '기본 생활습관',
+      subject: '일상생활 활동'
     },
-    grade: '중등 1-3학년 (자폐성장애)',
+    grade: '중1',
     duration: 30,
     learningObjectives: [
       '양치질의 순서를 단계별로 말할 수 있다',
@@ -261,14 +261,14 @@ export const exampleLessonPlans: ExampleLessonPlan[] = [
   },
   {
     id: 'example-3',
-    title: '사회성 기술 - 친구와 인사하기',
+    title: '중등 2학년 사회 - 친구와 인사하기',
     subject: '사회',
     curriculumArea: {
       category: '기본교육과정',
-      domain: '나와 다른 사람',
+      domain: '나와 우리',
       subject: '사회'
     },
-    grade: '초등 4-6학년 (발달장애)',
+    grade: '중2',
     duration: 35,
     learningObjectives: [
       '상황에 맞는 인사말을 선택할 수 있다',
@@ -352,14 +352,14 @@ export const exampleLessonPlans: ExampleLessonPlan[] = [
   },
   {
     id: 'example-4',
-    title: '한글 기초 - ㄱ,ㄴ,ㄷ 자음 인식',
+    title: '중등 1학년 국어 - 한글 기초 자음 인식',
     subject: '국어',
     curriculumArea: {
       category: '기본교육과정',
       domain: '읽기',
       subject: '국어'
     },
-    grade: '초등 1-2학년 (지적장애)',
+    grade: '중1',
     duration: 35,
     learningObjectives: [
       'ㄱ, ㄴ, ㄷ 자음의 모양을 구별할 수 있다',
@@ -444,14 +444,14 @@ export const exampleLessonPlans: ExampleLessonPlan[] = [
   },
   {
     id: 'example-5',
-    title: '감정 조절 - 화가 날 때 대처하기',
-    subject: '사회',
+    title: '중등 3학년 일상생활활동 - 감정 조절 기술',
+    subject: '일상생활 활동',
     curriculumArea: {
       category: '기본교육과정',
-      domain: '나와 다른 사람',
-      subject: '사회'
+      domain: '의사소통',
+      subject: '일상생활 활동'
     },
-    grade: '초등 3-5학년 (자폐성장애)',
+    grade: '중3',
     duration: 30,
     learningObjectives: [
       '화나는 감정을 인식하고 표현할 수 있다',
@@ -536,14 +536,14 @@ export const exampleLessonPlans: ExampleLessonPlan[] = [
   },
   {
     id: 'example-6',
-    title: '신체 움직임 - 대근육 운동 익히기',
+    title: '고등 1학년 체육 - 대근육 운동 및 신체 움직임',
     subject: '체육',
     curriculumArea: {
       category: '기본교육과정',
       domain: '건강',
       subject: '체육'
     },
-    grade: '초등 전학년 (중복장애)',
+    grade: '고1',
     duration: 40,
     learningObjectives: [
       '교사의 시범을 보고 기본 동작을 따라할 수 있다',
@@ -625,6 +625,283 @@ export const exampleLessonPlans: ExampleLessonPlan[] = [
     },
     difficulty: 'basic',
     tags: ['신체활동', '대근육운동', '감각통합', '음악치료']
+  },
+  // 새로운 예시들 - 2022 개정 특수교육과정 전체 반영
+  {
+    id: 'example-7',
+    title: '중등 1학년 국어 - 듣기·말하기 의사소통 연습',
+    subject: '국어',
+    curriculumArea: {
+      category: '기본교육과정',
+      domain: '듣기·말하기',
+      subject: '국어'
+    },
+    grade: '중1',
+    duration: 40,
+    learningObjectives: [
+      '간단한 질문을 듣고 이해할 수 있다',
+      '자신의 이름과 나이를 말할 수 있다',
+      '기본적인 인사말을 할 수 있다'
+    ],
+    targetStudents: [
+      {
+        name: '김○○',
+        disability: '지적장애 2급',
+        currentLevel: '단어 수준의 의사소통 가능',
+        goals: '진단-배치 대화 및 자기소개 가능',
+        accommodations: '시각적 지원, 반복 연습, 긍정적 강화'
+      }
+    ],
+    teachingMethods: [
+      '이미지 기반 의사소통',
+      '역할 놀이',
+      '상황중심 학습',
+      '사회적 스토리'
+    ],
+    materials: [
+      '상황별 그림카드',
+      '대화 연습판',
+      '녹음기',
+      '거울',
+      '인형'
+    ],
+    activities: [
+      {
+        phase: '도입',
+        time: 10,
+        activity: '인사 노래 부르며 자연스럽게 대화 시작',
+        materials: '인사 노래 CD',
+        notes: '학생이 편안해할 때까지 기다리기'
+      },
+      {
+        phase: '전개 1',
+        time: 15,
+        activity: '그림카드를 보며 상황에 맞는 말 찾기',
+        materials: '상황별 그림카드',
+        notes: '다양한 상황을 제시하여 선택범위 넓히기'
+      },
+      {
+        phase: '전개 2',
+        time: 10,
+        activity: '교사와 역할놓이로 대화 연습',
+        materials: '역할놓이 소품',
+        notes: '반복 연습을 통한 자연스러운 표현 연습'
+      },
+      {
+        phase: '정리',
+        time: 5,
+        activity: '오늘 연습한 대화 다시 해보기',
+        materials: '대화 연습판',
+        notes: '성취감과 자신감 향상'
+      }
+    ],
+    assessmentMethods: [
+      '관찰 평가: 의사소통 적극성',
+      '수행 평가: 역할놓이 참여도',
+      '사회성 평가: 또래와의 상호작용'
+    ],
+    accommodations: [
+      '학생 속도에 맞는 반복 연습',
+      '시각적 단서 활용',
+      '긍정적 피드백 제공',
+      '성공 경험 극대화'
+    ],
+    notes: '말하기 능력 개발은 일상생활과 밀접한 관련이 있으므로 실제 상황에서의 연습이 중요',
+    createdAt: new Date('2024-03-01'),
+    updatedAt: new Date('2024-03-01'),
+    disabilityType: '지적장애',
+    disabilityLevel: {
+      type: '지적장애',
+      severity: '중도',
+      functionalLevel: 'IQ 35-50, 기본적인 의사소통 및 사회성 기술 습득 가능',
+      supportNeeds: '시각적 지원과 단계별 반복 학습 필요'
+    },
+    difficulty: 'intermediate',
+    tags: ['의사소통', '말하기', '자기소개', '사회성']
+  },
+  {
+    id: 'example-8',
+    title: '고등 2학년 진로와직업 - 직업 세계 탐색',
+    subject: '진로와 직업',
+    curriculumArea: {
+      category: '기본교육과정',
+      domain: '직업 세계',
+      subject: '진로와 직업'
+    },
+    grade: '고2',
+    duration: 45,
+    learningObjectives: [
+      '다양한 직업의 종류를 알 수 있다',
+      '자신의 관심사와 적성을 파악할 수 있다',
+      '학교에서 배워야 할 기술과 직업을 연결할 수 있다'
+    ],
+    targetStudents: [
+      {
+        name: '이○○',
+        disability: '지적장애 3급',
+        currentLevel: '기본적인 일상생활 기능 수행 가능',
+        goals: '단순 업무 중심의 직업 준비',
+        accommodations: '구체적 예시, 실물 교구, 체험 활동'
+      }
+    ],
+    teachingMethods: [
+      '체험 중심 학습',
+      '직업 분석 기법',
+      '인터뷰 활동',
+      '현장 견학'
+    ],
+    materials: [
+      '직업 소개 비디오',
+      '직업 챴험 세트',
+      '인터뷰 질문지',
+      '직업 분류 카드',
+      '학교 지도'
+    ],
+    activities: [
+      {
+        phase: '도입',
+        time: 10,
+        activity: '직업 소개 비디오 시청 및 토론',
+        materials: '직업 소개 비디오',
+        notes: '다양한 직업에 대한 열린 태도 형성'
+      },
+      {
+        phase: '전개 1',
+        time: 15,
+        activity: '직업 분류 카드로 직업 분류하기',
+        materials: '직업 분류 카드',
+        notes: '학생이 직접 조작하며 분류해보기'
+      },
+      {
+        phase: '전개 2',
+        time: 15,
+        activity: '학교 내 다양한 직업 최행 및 체험',
+        materials: '학교 지도, 직업 챴험 세트',
+        notes: '사서, 요리사, 청소원 등 교내 직업 체험'
+      },
+      {
+        phase: '정리',
+        time: 5,
+        activity: '오늘 배운 직업 중 관심 있는 직업 발표',
+        materials: '인터뷰 질문지',
+        notes: '다음 차시 활동 계획 세우기'
+      }
+    ],
+    assessmentMethods: [
+      '관찰 평가: 체험 활동 참여도',
+      '수행 평가: 직업 분류 정확도',
+      '자기 평가: 관심 직업 설명하기'
+    ],
+    accommodations: [
+      '구체적이고 시각적인 자료 제공',
+      '체험 위주의 활동 설계',
+      '개별 관심사를 고려한 맞춤 지도',
+      '충분한 연습과 반복 시간'
+    ],
+    notes: '진로 교육은 학생의 미래와 직결되므로 실제적이고 참여형 활동이 효과적',
+    createdAt: new Date('2024-03-05'),
+    updatedAt: new Date('2024-03-05'),
+    disabilityType: '지적장애',
+    disabilityLevel: {
+      type: '지적장애',
+      severity: '경도',
+      functionalLevel: 'IQ 50-70, 기본적인 직업 기술 습득 가능',
+      supportNeeds: '구조화된 학습 환경과 반복 연습 필요'
+    },
+    difficulty: 'intermediate',
+    tags: ['진로탐색', '직업체험', '자기이해', '미래계획']
+  },
+  {
+    id: 'example-9',
+    title: '중등 2학년 과학 - 물질의 상태 변화 관찰',
+    subject: '과학',
+    curriculumArea: {
+      category: '기본교육과정',
+      domain: '물질',
+      subject: '과학'
+    },
+    grade: '중2',
+    duration: 40,
+    learningObjectives: [
+      '물, 얼음, 수증기의 차이를 구별할 수 있다',
+      '온도 변화에 따른 물질 상태 변화를 관찰할 수 있다',
+      '일상생활에서 물질 상태 변화를 찾을 수 있다'
+    ],
+    targetStudents: [
+      {
+        name: '박○○',
+        disability: 'ADHD',
+        currentLevel: '단순한 과학 개념 이해 가능',
+        goals: '집중력 향상과 과학적 사고력 개발',
+        accommodations: '단순명료한 설명, 체험 활동, 구조화된 환경'
+      }
+    ],
+    teachingMethods: [
+      '탐구 기반 학습',
+      '실험 관찰 학습',
+      '시각적 도식화',
+      '전체-부분-전체 접근법'
+    ],
+    materials: [
+      '얼음 조각',
+      '비커, 뜨거운 물',
+      '온도계',
+      '검은 종이',
+      '관찰 일지'
+    ],
+    activities: [
+      {
+        phase: '도입',
+        time: 8,
+        activity: '일상생활에서 물의 다양한 모습 이야기',
+        materials: '물 상태 사진카드',
+        notes: '학생의 경험과 연결하여 흥미 유발'
+      },
+      {
+        phase: '전개 1',
+        time: 15,
+        activity: '얼음 녹이기 실험 및 관찰',
+        materials: '얼음 조각, 비커, 온도계',
+        notes: '직접 만져보고 변화를 관찰하며 기록'
+      },
+      {
+        phase: '전개 2',
+        time: 12,
+        activity: '물 끓이기 및 수증기 만들기 실험',
+        materials: '비커, 뜨거운 물, 검은 종이',
+        notes: '안전 수칙 철저히 준수하며 진행'
+      },
+      {
+        phase: '정리',
+        time: 5,
+        activity: '관찰 결과 발표 및 일상 사례 찾기',
+        materials: '관찰 일지',
+        notes: '과학적 표현 연습과 생활 적용'
+      }
+    ],
+    assessmentMethods: [
+      '관찰 평가: 실험 참여도 및 태도',
+      '수행 평가: 가설 수립 및 관찰 기록',
+      '구두 평가: 실험 결과 설명하기'
+    ],
+    accommodations: [
+      '실험 단계를 단순하게 세분화',
+      '시각적 도식 및 그림 자료 제공',
+      '집중력 강화를 위한 구조화된 활동',
+      '성공 경험 제공을 위한 개별 지도'
+    ],
+    notes: 'ADHD 학생에게는 체험 학습이 효과적. 실험의 결과보다는 과정에서의 참여와 탐구에 중점',
+    createdAt: new Date('2024-03-10'),
+    updatedAt: new Date('2024-03-10'),
+    disabilityType: 'ADHD',
+    disabilityLevel: {
+      type: 'ADHD',
+      severity: '중도',
+      functionalLevel: '주의집중 시간이 짧지만 적절한 지원으로 학습 참여 가능',
+      supportNeeds: '구조화된 환경과 체험 중심 활동 필요'
+    },
+    difficulty: 'basic',
+    tags: ['과학실험', '물질상태', '관찰학습', '체험학습']
   }
 ];
 
