@@ -4,9 +4,15 @@ export interface ExampleTemplate {
   id: string;
   title: string;
   description: string;
-  category: '국어' | '수학' | '사회' | '과학' | '영어' | '체육' | '음악' | '미술' | '특수교육' | '생활국어' | '생활수학' | '진로와 직업' | '일상생활 활동' | '언어치료';
+  category: '국어' | '수학' | '사회' | '과학' | '영어' | '체육' | '음악' | '미술' | '특수교육' | '생활국어' | '생활수학' | '생활사회' | '생활과학' | '생활체육' | '생활음악' | '생활미술' | '진로와 직업' | '일상생활 활동' | '언어치료';
   grade: string;
   lessonPlan: Omit<LessonPlan, 'id' | 'createdAt' | 'updatedAt'>;
+  metadata?: {
+    targetDisability?: string[];
+    difficulty?: 'easy' | 'medium' | 'hard';
+    keywords?: string[];
+    materials?: string[];
+  };
 }
 
 export const exampleTemplates: ExampleTemplate[] = [
@@ -981,6 +987,708 @@ export const exampleTemplates: ExampleTemplate[] = [
           '흥미로운 활동과 게임 요소 포함',
           '자기 점검 기회 제공',
           '성취 과정 시각적으로 기록'
+        ]
+      }
+    }
+  },
+  {
+    id: 'social-neighborhood',
+    title: '우리 동네 알아보기 (사회)',
+    description: '집 주변의 주요 장소와 기능을 이해하고 지역사회 구성원으로서의 역할 알기',
+    category: '사회',
+    grade: '초등 2학년',
+    lessonPlan: {
+      basicInfo: {
+        title: '우리 동네의 중요한 장소들',
+        subject: '사회',
+        unit: '2. 우리가 살아가는 곳',
+        lesson: '1/6차시',
+        grade: '초등 2학년',
+        duration: 40,
+        date: '',
+        teacher: '',
+        students: {
+          total: 6,
+          levels: { high: 2, middle: 2, low: 2 }
+        }
+      },
+      objectives: {
+        main: '우리 동네의 중요한 장소들을 알고 각 장소의 기능을 설명할 수 있다.',
+        byLevel: {
+          high: '동네 지도를 보며 여러 장소를 찾고, 각 장소에서 할 수 있는 일을 구체적으로 설명할 수 있다.',
+          middle: '주요 장소(학교, 병원, 마트, 공원)를 구별하고 기본 기능을 말할 수 있다.',
+          low: '교사의 도움으로 친숙한 장소 3-4곳을 인식하고 가본 경험을 표현할 수 있다.'
+        }
+      },
+      materials: {
+        teacher: ['동네 지도', '장소별 사진 카드', '실제 방문 영상', '미니어처 건물 모형'],
+        student: ['개별 활동지', '색연필', '스티커'],
+        assistive: ['확대 지도', '음성 설명 파일', '촉각 지도', '그림 상징 카드']
+      },
+      activities: {
+        introduction: {
+          greeting: '우리 동네 탐험가들, 안녕하세요!',
+          review: '집에서 학교까지 오는 길에 어떤 곳들을 지나왔는지 생각해봅시다.',
+          motivation: '우리 동네 항공사진을 보며 익숙한 장소들을 찾아봅시다.',
+          objectives: '오늘은 우리 동네에 있는 중요한 장소들과 그곳에서 하는 일을 알아보겠습니다.',
+          preview: '지도와 사진을 보며 동네 여행을 떠나볼 거예요!'
+        },
+        development: {
+          activity1: {
+            title: '동네 지도에서 장소 찾기',
+            content: '큰 동네 지도를 보며 학교, 병원, 마트, 공원, 우체국 등의 위치를 확인하고 각 장소의 특징과 기능 학습하기',
+            materials: '동네 지도, 장소 표시 스티커, 사진 카드',
+            levelSupport: {
+              high: '지도에서 여러 장소를 찾고 최적의 이동 경로 계획하기',
+              middle: '주요 장소들의 위치와 기능을 지도에 표시하기',
+              low: '교사와 함께 친숙한 장소 위주로 위치 확인하기'
+            },
+            behaviorSupport: {
+              contract: '친구들과 협력하여 지도 활동 참여하기',
+              modeling: '교사의 장소 찾기 시범을 관찰하고 따라하기'
+            },
+            assessment: '지도에서 장소를 정확히 찾고 기능을 설명하는 정도 확인'
+          },
+          activity2: {
+            title: '장소별 역할놀이',
+            content: '각 장소에서 일하는 사람들과 이용하는 사람들의 역할을 놀이로 체험하기',
+            teamwork: '장소별로 팀을 나누어 상황극 준비하기',
+            demonstration: '교사가 마트 점원 역할로 시범 보이기',
+            practice: '각 팀별로 병원, 우체국, 도서관 등에서의 상황 연기하기',
+            feedback: '역할놀이 후 각 장소의 중요성에 대해 이야기 나누기',
+            scoring: '참여도와 협력도를 중심으로 평가하기'
+          }
+        },
+        closure: {
+          evaluation: '오늘 배운 동네 장소들 중 가장 가고 싶은 곳과 그 이유 발표하기',
+          nextLesson: '다음 시간에는 동네 사람들의 다양한 직업에 대해 알아보겠습니다.',
+          farewell: '우리 동네를 더 사랑하게 된 하루였어요. 안녕히 가세요!'
+        }
+      },
+      evaluation: {
+        criteria: [
+          {
+            area: '지역 인식',
+            description: '동네 주요 장소 파악 정도',
+            levels: {
+              high: '다양한 장소를 지도에서 찾고 위치관계 이해',
+              middle: '주요 장소들을 구별하고 기본 위치 파악',
+              low: '친숙한 장소 3-4곳을 사진으로 인식'
+            }
+          },
+          {
+            area: '사회적 이해',
+            description: '장소의 기능과 역할 이해도',
+            levels: {
+              high: '장소별 세부 기능과 사회적 역할 설명',
+              middle: '각 장소의 기본 용도와 기능 이해',
+              low: '장소와 기본 활동을 연결지어 인식'
+            }
+          }
+        ],
+        reflection: {
+          strengths: '실제 지도와 사진 자료 활용으로 학습자들의 현실 인식이 높아졌고, 역할놀이를 통한 체험적 학습이 효과적이었음',
+          improvements: '일부 학습자들이 추상적인 지도 이해에 어려움을 보여 더 구체적인 시각자료 보완 필요',
+          nextPlans: '실제 동네 탐방 활동을 통해 직접 경험할 수 있는 기회 제공'
+        }
+      },
+      specialNeeds: {
+        communicationSupport: [
+          '장소 이름과 기능을 쉬운 단어로 설명',
+          '시각적 사진 자료와 함께 설명',
+          '손짓과 몸짓을 활용한 표현 인정',
+          '학습자의 경험과 연결한 설명'
+        ],
+        learningSupport: [
+          '실물 크기의 지도와 미니어처 활용',
+          '개별 학습자의 생활 경험 반영',
+          '단계적이고 반복적인 설명',
+          '직접 체험할 수 있는 활동 중심'
+        ],
+        behaviorSupport: [
+          '익숙한 장소부터 시작하여 불안감 감소',
+          '성공적인 찾기 활동에 대한 즉시 강화',
+          '또래와의 협력 활동을 통한 사회성 증진',
+          '개별 관심사를 반영한 장소 탐색'
+        ],
+        sensorySupport: [
+          '촉각적으로 탐색 가능한 입체 지도',
+          '다양한 크기의 시각 자료 제공',
+          '실제 장소의 소리와 냄새 경험',
+          '적절한 조명과 시각적 대비'
+        ],
+        participationSupport: [
+          '개별 생활권을 중심으로 한 개별화 접근',
+          '가족과 함께 다녀온 장소 우선 탐색',
+          '선택권 제공을 통한 주도적 참여',
+          '작은 발견에 대한 적극적 격려'
+        ]
+      }
+    }
+  },
+  {
+    id: 'english-basic-greetings',
+    title: '인사말과 기본 표현 (영어)',
+    description: '일상생활에서 사용하는 기본적인 영어 인사말과 감사 표현 익히기',
+    category: '영어',
+    grade: '초등 3학년',
+    lessonPlan: {
+      basicInfo: {
+        title: 'Hello, Thank you - 기본 영어 표현',
+        subject: '영어',
+        unit: '1. Nice to Meet You',
+        lesson: '1/8차시',
+        grade: '초등 3학년',
+        duration: 30,
+        date: '',
+        teacher: '',
+        students: {
+          total: 5,
+          levels: { high: 2, middle: 2, low: 1 }
+        }
+      },
+      objectives: {
+        main: '기본적인 영어 인사말(Hello, Hi, Goodbye)과 감사 표현(Thank you)을 상황에 맞게 사용할 수 있다.',
+        byLevel: {
+          high: '다양한 인사 표현을 구별하여 사용하고, 간단한 대화를 주고받을 수 있다.',
+          middle: 'Hello, Goodbye, Thank you를 정확한 발음으로 상황에 맞게 말할 수 있다.',
+          low: '교사의 도움으로 Hello와 Thank you를 따라 말하고 몸짓으로 표현할 수 있다.'
+        }
+      },
+      materials: {
+        teacher: ['영어 인사말 카드', '상황별 그림 자료', '영어 동요 음원', '손인형'],
+        student: ['개별 단어 카드', '스티커', '색연필'],
+        assistive: ['음성 출력 장치', '그림-단어 매칭 카드', '확대 인쇄물', '촉각 단어카드']
+      },
+      activities: {
+        introduction: {
+          greeting: 'Hello, everyone! Nice to meet you!',
+          review: '우리말로 인사할 때 어떤 말을 사용하는지 생각해봅시다.',
+          motivation: '외국 친구들은 어떻게 인사할까요? 재미있는 영어 노래를 들어봅시다.',
+          objectives: '오늘은 영어로 인사하고 고마움을 표현하는 방법을 배우겠습니다.',
+          preview: '손인형 친구들과 함께 영어로 대화해볼 거예요!'
+        },
+        development: {
+          activity1: {
+            title: '영어 인사말 익히기',
+            content: 'Hello, Hi, Good morning, Goodbye 등의 기본 인사말을 그림카드와 함께 학습하고, 상황별로 언제 사용하는지 익히기',
+            materials: '인사말 카드, 상황 그림, 음성 자료',
+            levelSupport: {
+              high: '시간대별, 상황별 인사말 구별하여 사용하기',
+              middle: '기본 인사말 4-5개를 정확한 발음으로 말하기',
+              low: 'Hello와 Goodbye를 손짓과 함께 표현하기'
+            },
+            behaviorSupport: {
+              contract: '큰 소리로 따라 하며 친구들과 함께 연습하기',
+              modeling: '교사와 손인형의 인사 시범을 관찰하고 모방하기'
+            },
+            assessment: '개별적으로 인사말 사용 상황 이해도와 발음 정확도 확인'
+          },
+          activity2: {
+            title: '감사 표현과 역할놀이',
+            content: 'Thank you, You\'re welcome 표현을 익히고 일상 상황에서의 간단한 영어 대화 연습',
+            teamwork: '짝을 이뤄서 인사-감사-응답의 대화 패턴 연습',
+            demonstration: '교사가 학생과 영어 대화 시범 보이기',
+            practice: '손인형을 활용한 개별 대화 연습 시간',
+            feedback: '정확한 발음과 자연스러운 표현에 대한 즉시 칭찬',
+            scoring: '적극적인 참여와 시도하려는 의지를 중심으로 평가'
+          }
+        },
+        closure: {
+          evaluation: '오늘 배운 영어 표현으로 교사 및 친구들과 실제 인사 나누기',
+          nextLesson: '다음 시간에는 영어로 자기소개하는 방법을 배워보겠습니다.',
+          farewell: 'Goodbye, everyone! See you next time!'
+        }
+      },
+      evaluation: {
+        criteria: [
+          {
+            area: '발음 정확도',
+            description: '영어 인사말의 정확한 발음',
+            levels: {
+              high: '자연스럽고 정확한 발음으로 표현',
+              middle: '기본적으로 알아들을 수 있는 발음',
+              low: '모방하여 따라 말하기 시도'
+            }
+          },
+          {
+            area: '상황 이해',
+            description: '인사말 사용 상황의 적절성',
+            levels: {
+              high: '다양한 상황에 맞는 표현 선택 사용',
+              middle: '기본 상황에서 적절한 표현 사용',
+              low: '교사 안내로 상황에 맞는 표현 시도'
+            }
+          }
+        ],
+        reflection: {
+          strengths: '손인형과 시각자료를 활용한 상호작용적 학습으로 학습자들의 흥미와 참여도가 높았음',
+          improvements: '발음 지도 시 더 많은 개별 연습 시간이 필요하며, 다양한 상황 제시 필요',
+          nextPlans: '가정과 연계하여 일상에서 영어 표현 사용할 수 있는 환경 조성'
+        }
+      },
+      specialNeeds: {
+        communicationSupport: [
+          '명확하고 천천히 발음하여 모델링',
+          '시각적 입 모양 카드 함께 제시',
+          '몸짓과 표정을 함께 사용한 표현',
+          '모국어 연결을 통한 의미 이해'
+        ],
+        learningSupport: [
+          '반복적이고 체계적인 발음 연습',
+          '개별 속도에 맞는 학습 진행',
+          '충분한 듣기 기회 제공',
+          '다감각적 학습 방법 활용'
+        ],
+        behaviorSupport: [
+          '작은 성취에 대한 즉시적 강화',
+          '실수에 대한 격려와 재시도 기회',
+          '편안하고 재미있는 학습 분위기',
+          '개별 특성을 고려한 접근'
+        ],
+        sensorySupport: [
+          '적절한 음량의 음성 자료',
+          '크고 선명한 시각 자료',
+          '촉각적 단어 카드 활용',
+          '다양한 감각 자극을 통한 기억 강화'
+        ],
+        participationSupport: [
+          '개별 수준에 맞는 목표 설정',
+          '선택권을 제공한 활동 참여',
+          '또래와의 협력 학습 격려',
+          '문화적 차이에 대한 이해와 존중'
+        ]
+      }
+    }
+  },
+  {
+    id: 'physical-ball-activities',
+    title: '공 던지고 받기 (체육)',
+    description: '대근육 발달과 협응력 향상을 위한 기본적인 공놀이 활동',
+    category: '체육',
+    grade: '초등 1학년',
+    lessonPlan: {
+      basicInfo: {
+        title: '여러 가지 공으로 놀아요',
+        subject: '체육',
+        unit: '1. 건강 활동',
+        lesson: '2/8차시',
+        grade: '초등 1학년',
+        duration: 40,
+        date: '',
+        teacher: '',
+        students: {
+          total: 8,
+          levels: { high: 3, middle: 3, low: 2 }
+        }
+      },
+      objectives: {
+        main: '다양한 크기의 공을 안전하게 던지고 받으며 기본적인 운동 협응력을 기를 수 있다.',
+        byLevel: {
+          high: '움직이는 상대에게 정확히 공을 던지고, 다양한 방향에서 오는 공을 받을 수 있다.',
+          middle: '제자리에서 상대방과 공을 주고받으며 기본적인 던지기와 받기를 할 수 있다.',
+          low: '교사나 보조인력의 도움으로 큰 공을 양손으로 던지고 받을 수 있다.'
+        }
+      },
+      materials: {
+        teacher: ['다양한 크기의 공', '타겟 판', '안전 콘', '음악', '호루라기'],
+        student: ['개별 수건', '물통'],
+        assistive: ['휠체어용 공 홀더', '가벼운 스펀지 공', '소리나는 공', '끈 달린 공']
+      },
+      activities: {
+        introduction: {
+          greeting: '건강한 우리 몸을 만드는 체육 시간입니다!',
+          review: '지난 시간에 배운 스트레칭 동작을 함께 해봅시다.',
+          motivation: '여러 가지 공을 보여주며 어떤 놀이를 할 수 있는지 상상해보기',
+          objectives: '오늘은 공을 안전하고 재미있게 던지고 받는 방법을 배우겠습니다.',
+          preview: '음악에 맞춰 공과 함께 신나는 활동을 해볼 거예요!'
+        },
+        development: {
+          activity1: {
+            title: '공 던지기 기본 동작 익히기',
+            content: '서 있는 자세에서 양손으로 공 던지기, 한 손으로 던지기, 밑에서 위로 던지기 등 기본 동작을 단계별로 연습',
+            materials: '크기별 공, 타겟 판, 안전 콘',
+            levelSupport: {
+              high: '다양한 던지기 방법으로 정확한 타겟 맞추기',
+              middle: '기본 던지기 자세로 3미터 거리 던지기',
+              low: '보조 받아 큰 공을 양손으로 앞으로 굴리기'
+            },
+            behaviorSupport: {
+              contract: '안전 규칙 지키며 차례대로 활동하기',
+              modeling: '교사의 올바른 던지기 자세 관찰하고 따라하기'
+            },
+            assessment: '개별 운동 능력에 따른 던지기 정확도와 안전성 확인'
+          },
+          activity2: {
+            title: '공 받기와 협력 활동',
+            content: '제자리에서 공 받기부터 시작하여 점차 움직이면서 받기, 짝과 함께 공 주고받기 게임',
+            teamwork: '2명씩 짝을 이뤄 거리를 조절해가며 공 주고받기',
+            demonstration: '교사와 학생이 모범적인 공 주고받기 시범',
+            practice: '개별 수준에 맞는 거리와 공 크기로 연습하기',
+            feedback: '성공적인 받기와 협력에 대한 즉시적 격려',
+            scoring: '기능보다는 안전한 참여와 협력 태도 중심 평가'
+          }
+        },
+        closure: {
+          evaluation: '오늘 활동 중 가장 재미있었던 것과 어려웠던 점 나누기',
+          nextLesson: '다음 시간에는 공을 이용한 간단한 게임을 해보겠습니다.',
+          farewell: '안전하게 잘 활동한 우리 친구들, 수고했어요!'
+        }
+      },
+      evaluation: {
+        criteria: [
+          {
+            area: '기본 운동 기능',
+            description: '공 던지기와 받기 기본 동작',
+            levels: {
+              high: '정확하고 안정적인 던지기와 받기',
+              middle: '기본 동작으로 공 주고받기 가능',
+              low: '도움 받아 기본 동작 수행'
+            }
+          },
+          {
+            area: '협응력',
+            description: '눈과 손의 협응 및 균형감',
+            levels: {
+              high: '움직이면서도 정확한 협응 동작',
+              middle: '제자리에서 기본적인 협응 동작',
+              low: '보조 받아 단순한 협응 동작'
+            }
+          },
+          {
+            area: '안전 의식',
+            description: '안전 규칙 이해 및 준수',
+            levels: {
+              high: '스스로 안전 규칙 지키며 타인 배려',
+              middle: '안내에 따른 기본 안전 수칙 준수',
+              low: '지속적 안내로 기본 안전 행동'
+            }
+          }
+        ],
+        reflection: {
+          strengths: '개별 수준을 고려한 다양한 공과 활동으로 모든 학습자가 성공 경험을 가질 수 있었고, 안전한 환경에서 즐겁게 참여했음',
+          improvements: '지체장애 학습자를 위한 더 다양한 보조 도구와 수정된 활동 방법 필요',
+          nextPlans: '실외 활동으로 확장하여 더 넓은 공간에서의 대근육 활동 기회 제공'
+        }
+      },
+      specialNeeds: {
+        communicationSupport: [
+          '명확하고 단순한 동작 지시',
+          '시범과 함께하는 시각적 설명',
+          '몸짓과 신호를 활용한 안내',
+          '개별 이해 수준에 맞는 설명'
+        ],
+        learningSupport: [
+          '개별 운동 능력에 맞는 과제 조정',
+          '충분한 연습 시간과 반복 기회',
+          '단계적이고 체계적인 기능 습득',
+          '성공 경험을 위한 난이도 조절'
+        ],
+        behaviorSupport: [
+          '명확한 안전 규칙과 활동 경계',
+          '즉시적이고 구체적인 격려',
+          '또래와의 긍정적 상호작용 촉진',
+          '개별 관심사를 반영한 동기 부여'
+        ],
+        sensorySupport: [
+          '다양한 질감과 크기의 공 제공',
+          '적절한 조명과 시각적 대비',
+          '소리나는 공으로 청각 자극',
+          '안전하고 쾌적한 활동 환경'
+        ],
+        participationSupport: [
+          '개별 장애 특성에 맞는 활동 수정',
+          '보조 도구와 지원 인력 활용',
+          '선택권과 자기결정 기회 제공',
+          '작은 향상에 대한 적극적 인정'
+        ]
+      }
+    }
+  },
+  {
+    id: 'music-rhythm-patterns',
+    title: '리듬 따라 하기 (음악)',
+    description: '간단한 리듬 패턴을 익히고 다양한 방법으로 표현하기',
+    category: '음악',
+    grade: '초등 2학년',
+    lessonPlan: {
+      basicInfo: {
+        title: '박수와 발구르기로 리듬 만들기',
+        subject: '음악',
+        unit: '1. 리듬과 친해져요',
+        lesson: '3/6차시',
+        grade: '초등 2학년',
+        duration: 40,
+        date: '',
+        teacher: '',
+        students: {
+          total: 6,
+          levels: { high: 2, middle: 2, low: 2 }
+        }
+      },
+      objectives: {
+        main: '간단한 리듬 패턴을 듣고 박수, 발구르기, 악기로 정확하게 표현할 수 있다.',
+        byLevel: {
+          high: '복잡한 리듬 패턴을 만들고 친구들에게 가르치며, 여러 악기로 합주할 수 있다.',
+          middle: '기본 리듬 패턴을 정확히 따라 하고 간단한 악기로 연주할 수 있다.',
+          low: '교사의 시범을 보고 단순한 박수 리듬을 따라 할 수 있다.'
+        }
+      },
+      materials: {
+        teacher: ['리듬 카드', '메트로놈', '피아노', '다양한 타악기', '음향 장비'],
+        student: ['개별 마라카스', '리듬스틱', '개별 리듬 워크시트'],
+        assistive: ['진동 감지 쿠션', '큰 리듬 카드', '색깔별 리듬 표시', '청각 증폭 장치']
+      },
+      activities: {
+        introduction: {
+          greeting: '즐거운 음악 시간입니다! 모두 함께 박수로 인사해요!',
+          review: '지난 시간에 배운 빠르기의 차이를 몸으로 표현해봅시다.',
+          motivation: '우리 주변에서 들을 수 있는 다양한 소리들을 찾아보고 리듬이 있는지 들어보기',
+          objectives: '오늘은 여러 가지 방법으로 리듬을 만들고 표현해보겠습니다.',
+          preview: '박수, 발구르기, 악기로 멋진 리듬 연주를 해볼 거예요!'
+        },
+        development: {
+          activity1: {
+            title: '몸으로 리듬 표현하기',
+            content: '교사의 리듬 시범을 보고 박수, 발구르기, 무릎 치기 등 다양한 몸짓으로 리듬 패턴 따라하기',
+            materials: '리듬 카드, 메트로놈, 거울',
+            levelSupport: {
+              high: '복잡한 리듬 패턴 창작하고 지휘하기',
+              middle: '기본 패턴을 정확한 박자로 표현하기',
+              low: '단순 반복 패턴을 천천히 따라하기'
+            },
+            behaviorSupport: {
+              contract: '다른 친구들의 연주를 방해하지 않고 집중하기',
+              modeling: '교사와 우수 학생의 정확한 리듬 모델링'
+            },
+            assessment: '개별 리듬감과 박자 정확도, 표현력 관찰'
+          },
+          activity2: {
+            title: '악기로 리듬 앙상블',
+            content: '마라카스, 탬버린, 리듬스틱 등 간단한 타악기로 모둠별 리듬 합주하기',
+            teamwork: '악기별로 역할을 나누어 하나의 곡 완성하기',
+            demonstration: '교사가 각 악기의 연주법과 합주 방법 시범',
+            practice: '개별 악기 연습 후 점진적으로 합주 연습',
+            feedback: '서로의 연주를 듣고 격려하며 개선점 나누기',
+            scoring: '협력도와 리듬 정확도, 음악적 표현력 종합 평가'
+          }
+        },
+        closure: {
+          evaluation: '오늘 배운 리듬으로 즉흥 연주해보고, 가장 기억에 남는 리듬 발표하기',
+          nextLesson: '다음 시간에는 우리가 만든 리듬에 멜로디를 붙여보겠습니다.',
+          farewell: '아름다운 리듬으로 하루를 마무리해요. 안녕히 가세요!'
+        }
+      },
+      evaluation: {
+        criteria: [
+          {
+            area: '리듬감',
+            description: '정확한 박자와 리듬 패턴 이해',
+            levels: {
+              high: '복잡한 리듬도 정확하게 표현',
+              middle: '기본 리듬 패턴을 안정적으로 연주',
+              low: '단순한 리듬을 도움 받아 표현'
+            }
+          },
+          {
+            area: '음악적 표현',
+            description: '창의적이고 감정적인 음악 표현',
+            levels: {
+              high: '독창적이고 풍부한 음악적 표현',
+              middle: '기본적인 음악적 감정 표현',
+              low: '모방을 통한 단순한 표현'
+            }
+          },
+          {
+            area: '협동심',
+            description: '합주에서의 협력과 조화',
+            levels: {
+              high: '다른 연주자와 완벽한 조화',
+              middle: '기본적인 합주 협력 가능',
+              low: '안내 받아 그룹 활동 참여'
+            }
+          }
+        ],
+        reflection: {
+          strengths: '다양한 감각을 활용한 리듬 활동으로 모든 학습자가 참여할 수 있었고, 특히 자폐성장애 학습자들이 규칙적인 리듬에 안정감을 보임',
+          improvements: '청각 장애 학습자를 위한 진동 기반 리듬 교육 방법 더 개발 필요',
+          nextPlans: '학교 행사에서 발표할 수 있는 간단한 리듬 앙상블 준비'
+        }
+      },
+      specialNeeds: {
+        communicationSupport: [
+          '시각적 리듬 기호와 몸짓 활용',
+          '명확한 박자 카운트와 신호',
+          '개별 수준에 맞는 단순한 언어',
+          '음성과 시각 정보 동시 제공'
+        ],
+        learningSupport: [
+          '반복적이고 체계적인 리듬 연습',
+          '개별 속도에 맞는 학습 진행',
+          '다감각적 리듬 체험 기회',
+          '성취 수준별 차별화된 과제'
+        ],
+        behaviorSupport: [
+          '규칙적인 리듬의 안정감 활용',
+          '음악적 성취에 대한 즉시 강화',
+          '자기표현 기회를 통한 자신감 증진',
+          '또래와의 음악적 소통 격려'
+        ],
+        sensorySupport: [
+          '청각 장애: 진동과 시각적 리듬 표현',
+          '시각 장애: 촉각적 악기와 음향 중심',
+          '감각 과부하: 적절한 음량 조절',
+          '다양한 질감의 악기 제공'
+        ],
+        participationSupport: [
+          '개별 선호하는 악기 선택권 제공',
+          '수준별 역할 분담으로 성공 경험',
+          '작은 음악적 시도도 적극 인정',
+          '가정과 연계한 음악 환경 조성'
+        ]
+      }
+    }
+  },
+  {
+    id: 'art-colors-shapes',
+    title: '색깔과 모양 표현 (미술)',
+    description: '다양한 재료로 색깔과 모양을 탐색하고 창의적으로 표현하기',
+    category: '미술',
+    grade: '초등 1학년',
+    lessonPlan: {
+      basicInfo: {
+        title: '만져보고 그려보는 색깔 세상',
+        subject: '미술',
+        unit: '1. 색깔과 모양',
+        lesson: '1/6차시',
+        grade: '초등 1학년',
+        duration: 40,
+        date: '',
+        teacher: '',
+        students: {
+          total: 7,
+          levels: { high: 2, middle: 3, low: 2 }
+        }
+      },
+      objectives: {
+        main: '기본 색깔(빨강, 파랑, 노랑)과 기본 도형(동그라미, 세모, 네모)을 구별하고 다양한 재료로 표현할 수 있다.',
+        byLevel: {
+          high: '색깔 혼합 실험을 통해 새로운 색을 만들고, 도형을 조합하여 창의적인 작품을 만들 수 있다.',
+          middle: '기본 색깔과 도형을 정확히 구별하여 그리고 칠할 수 있다.',
+          low: '교사의 도움으로 색깔과 도형을 만지고 경험하며 간단한 표현을 시도할 수 있다.'
+        }
+      },
+      materials: {
+        teacher: ['기본 색 물감', '다양한 붓', '색깔 도형 카드', '실물 도형 블록', '앞치마'],
+        student: ['개별 스케치북', '크레파스', '색연필', '찰흙'],
+        assistive: ['큰 붓과 그립', '촉각 도형판', '향이 나는 물감', '점자 도형 카드', '확대 색깔 샘플']
+      },
+      activities: {
+        introduction: {
+          greeting: '아름다운 색깔 세상으로 떠나는 미술 시간입니다!',
+          review: '우리 교실에서 빨간색, 파란색, 노란색인 것들을 찾아봅시다.',
+          motivation: '마법의 색깔 상자에서 여러 가지 색깔과 모양을 꺼내며 탐색하기',
+          objectives: '오늘은 색깔과 모양을 만지고, 보고, 그려보겠습니다.',
+          preview: '우리만의 특별한 색깔 작품을 만들어볼 거예요!'
+        },
+        development: {
+          activity1: {
+            title: '색깔과 도형 탐색하기',
+            content: '실제 색깔 블록과 도형 조각을 만지고 관찰하며 특징 발견하기. 색깔별, 모양별로 분류하고 이름 익히기.',
+            materials: '색깔 블록, 도형 조각, 분류 상자, 확대경',
+            levelSupport: {
+              high: '색깔 혼합 실험으로 2차 색깔 만들기',
+              middle: '기본 색깔과 도형을 정확히 분류하고 이름 말하기',
+              low: '촉각으로 색깔의 차이(거칠기, 온도감)와 도형 탐색'
+            },
+            behaviorSupport: {
+              contract: '재료를 소중히 다루고 정리정돈 하기',
+              modeling: '교사의 관찰과 탐색 방법 시범'
+            },
+            assessment: '색깔과 도형 구별 능력, 탐색 과정에서의 집중도 관찰'
+          },
+          activity2: {
+            title: '나만의 색깔 작품 만들기',
+            content: '다양한 재료(물감, 크레파스, 찰흙)를 사용하여 자유롭게 색깔과 모양 표현하기',
+            teamwork: '친구들과 색깔 재료 나누어 사용하며 작품 감상하기',
+            demonstration: '교사가 여러 재료 사용법과 표현 기법 시범',
+            practice: '개별적으로 자신만의 색깔 이야기가 담긴 그림 그리기',
+            feedback: '창의적인 표현과 시도에 대한 격려와 피드백',
+            scoring: '완성도보다 창의성과 참여 의지를 중심으로 평가'
+          }
+        },
+        closure: {
+          evaluation: '완성한 작품을 친구들 앞에서 소개하고, 사용한 색깔과 모양 설명하기',
+          nextLesson: '다음 시간에는 자연에서 찾을 수 있는 색깔들을 탐색해보겠습니다.',
+          farewell: '아름다운 작품을 만든 우리 예술가들, 수고했어요!'
+        }
+      },
+      evaluation: {
+        criteria: [
+          {
+            area: '색채 인식',
+            description: '기본 색깔 구별과 활용',
+            levels: {
+              high: '색깔 혼합과 다양한 색채 활용',
+              middle: '기본 색깔 정확한 구별과 사용',
+              low: '주요 색깔 인식과 간단한 활용'
+            }
+          },
+          {
+            area: '조형 감각',
+            description: '기본 도형 이해와 표현',
+            levels: {
+              high: '도형 조합으로 복합적 형태 표현',
+              middle: '기본 도형을 정확히 그리고 활용',
+              low: '도형의 기본 특징 인식과 모방'
+            }
+          },
+          {
+            area: '창의적 표현',
+            description: '개성 있는 미술 표현력',
+            levels: {
+              high: '독창적이고 상상력이 풍부한 표현',
+              middle: '기본적인 개성과 감정 표현',
+              low: '모방과 시도를 통한 단순 표현'
+            }
+          }
+        ],
+        reflection: {
+          strengths: '다감각적 재료 탐색으로 시각장애 학습자도 적극 참여할 수 있었고, 개별 표현을 존중하는 분위기가 창의성 발휘에 도움',
+          improvements: '시각 자료의 대비를 더 높이고, 저시력 학습자를 위한 조명 개선 필요',
+          nextPlans: '완성된 작품들로 교실 전시회를 열어 성취감과 자존감 향상 도모'
+        }
+      },
+      specialNeeds: {
+        communicationSupport: [
+          '색깔과 모양의 특징을 쉬운 말로 설명',
+          '시각적 자료와 실물 동시 제시',
+          '촉각적 경험을 언어로 표현 도움',
+          '개별 작품에 대한 긍정적 반응'
+        ],
+        learningSupport: [
+          '개별 학습자 수준에 맞는 재료 제공',
+          '단계적이고 반복적인 기법 지도',
+          '충분한 탐색과 실험 시간',
+          '실패를 두려워하지 않는 분위기'
+        ],
+        behaviorSupport: [
+          '명확한 활동 규칙과 재료 사용법',
+          '창의적 시도에 대한 즉시적 격려',
+          '또래 작품 감상을 통한 상호 존중',
+          '개별 관심사를 반영한 주제 선택'
+        ],
+        sensorySupport: [
+          '시각장애: 촉각 중심 재료와 향이 나는 물감',
+          '청각장애: 시각적 설명과 시범 중심',
+          '촉각 방어: 다양한 질감 재료로 점진적 적응',
+          '적절한 작업 환경과 조명'
+        ],
+        participationSupport: [
+          '개별 장애 특성에 맞는 도구 제공',
+          '성취 가능한 개별 목표 설정',
+          '작은 시도와 과정도 적극 인정',
+          '가족과 함께하는 미술 활동 연계'
         ]
       }
     }

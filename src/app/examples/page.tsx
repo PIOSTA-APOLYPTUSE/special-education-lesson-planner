@@ -11,7 +11,15 @@ export default function ExamplesPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('전체');
   const [examples] = useState<ExampleTemplate[]>(getAllExamples());
 
-  const categories = ['전체', '국어', '수학', '과학', '사회', '영어', '체육', '음악', '미술', '특수교육'];
+  const categoryGroups = {
+    '전체': ['전체'],
+    '기본교과': ['국어', '생활국어', '수학', '생활수학', '사회', '생활사회', '과학', '생활과학'],
+    '예체능': ['영어', '체육', '생활체육', '음악', '생활음악', '미술', '생활미술'],
+    '특수교육': ['진로와 직업', '일상생활 활동', '특수교육'],
+    '치료지원': ['언어치료', '작업치료', '물리치료']
+  };
+
+  const allCategories = Object.values(categoryGroups).flat();
 
   const filteredExamples = selectedCategory === '전체'
     ? examples
@@ -83,20 +91,27 @@ export default function ExamplesPage() {
                 원하는 템플릿을 선택하여 바로 사용하거나 수정해서 활용하세요.
               </p>
 
-              {/* 카테고리 필터 */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                      selectedCategory === category
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {category}
-                  </button>
+              {/* 카테고리 필터 - 그룹별 구조화 */}
+              <div className="mb-6">
+                {Object.entries(categoryGroups).map(([groupName, categories]) => (
+                  <div key={groupName} className="mb-4">
+                    <h3 className="text-sm font-semibold text-gray-600 mb-2">{groupName}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {categories.map((category) => (
+                        <button
+                          key={category}
+                          onClick={() => setSelectedCategory(category)}
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                            selectedCategory === category
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          {category}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
