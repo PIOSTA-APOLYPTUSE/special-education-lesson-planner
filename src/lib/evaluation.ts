@@ -412,8 +412,7 @@ function evaluateTeachingMethodsDetailed(score: number, lessonPlan: LessonPlan) 
   evidence.push('교수방법: 새로운 구조로 개선 예정');
   
   const specialEducationMethods = ['개별화', '구체물', '다감각', '단계적', '반복', '시각적', '체계적'];
-  const usedSpecialMethods = [];
-  );
+  const usedSpecialMethods: string[] = [];
   
   if (usedSpecialMethods.length > 0) {
     evidence.push(`✓ 특수교육 전문 방법 사용: ${usedSpecialMethods.join(', ')}`);
@@ -452,14 +451,19 @@ ${currentContent}
 }
 
 function evaluateMaterialsDetailed(score: number, lessonPlan: LessonPlan) {
-  const currentContent = lessonPlan.materials.join('\n');
+  const allMaterials = [
+    ...lessonPlan.materials.teacher,
+    ...lessonPlan.materials.student,
+    ...lessonPlan.materials.assistive
+  ];
+  const currentContent = allMaterials.join('\n');
   const evidence = [];
-  
-  evidence.push(`교수자료 개수: ${lessonPlan.materials.length}개`);
-  
+
+  evidence.push(`교수자료 개수: ${allMaterials.length}개`);
+
   const concreteItems = ['블록', '카드', '구체물', '교구', '모형'];
   const hasConcreteItems = concreteItems.some(item =>
-    lessonPlan.materials.some(material => material.includes(item))
+    allMaterials.some(material => material.includes(item))
   );
   
   if (hasConcreteItems) {
@@ -500,18 +504,22 @@ ${currentContent}
 }
 
 function evaluateActivitiesDetailed(score: number, lessonPlan: LessonPlan) {
-  const currentContent = lessonPlan.activities.map(act => 
-    `${act.phase}(${act.time}분): ${act.activity}`
-  ).join('\n');
-  
+  const activities = lessonPlan.activities;
+  const currentContent = [
+    `도입: ${activities.introduction?.greeting || ''} ${activities.introduction?.motivation || ''}`,
+    `전개: ${activities.development?.activity1?.title || ''} ${activities.development?.activity2?.title || ''}`,
+    `정리: ${activities.closure?.evaluation || ''}`
+  ].filter(Boolean).join('\n');
+
   const evidence = [];
-  const totalTime = lessonPlan.activities.reduce((sum, activity) => sum + activity.time, 0);
-  
-  evidence.push(`수업활동 단계: ${lessonPlan.activities.length}개`);
-  evidence.push(`전체 소요시간: ${totalTime}분 (목표: ${lessonPlan.duration}분)`);
-  
-  if (Math.abs(totalTime - lessonPlan.duration) <= 5) {
-    evidence.push('✓ 시간 배분 적절함');
+  const estimatedTime = lessonPlan.basicInfo.duration || 40;
+
+  evidence.push('수업활동 단계: 도입-전개-정리 구성');
+  evidence.push(`목표 시간: ${estimatedTime}분`);
+
+  const hasStructuredActivities = activities.introduction && activities.development && activities.closure;
+  if (hasStructuredActivities) {
+    evidence.push('✓ 체계적인 수업 단계 구성');
   } else {
     evidence.push('✗ 시간 배분 조정 필요');
   }
@@ -548,20 +556,15 @@ function evaluateActivitiesDetailed(score: number, lessonPlan: LessonPlan) {
 }
 
 function evaluateAssessmentDetailed(score: number, lessonPlan: LessonPlan) {
-  const currentContent = lessonPlan.assessmentMethods.join('\n');
+  const currentContent = lessonPlan.evaluation?.criteria?.join('\n') || '평가 기준 없음';
   const evidence = [];
+
+  evidence.push(`평가기준 개수: ${lessonPlan.evaluation?.criteria?.length || 0}개`);
   
-  evidence.push(`평가방법 개수: ${lessonPlan.assessmentMethods.length}개`);
-  
-  const assessmentTypes = ['관찰', '수행', '포트폴리오', '체크리스트'];
-  const usedTypes = assessmentTypes.filter(type =>
-    lessonPlan.assessmentMethods.some(method => method.includes(type))
-  );
-  
-  if (usedTypes.length >= 2) {
-    evidence.push(`✓ 다양한 평가방법 사용: ${usedTypes.join(', ')}`);
+  if (lessonPlan.evaluation?.criteria && lessonPlan.evaluation.criteria.length > 0) {
+    evidence.push('✓ 평가 기준 설정됨');
   } else {
-    evidence.push('✗ 평가방법 다양성 부족');
+    evidence.push('✗ 평가 기준 부족');
   }
   
   const feedback = score >= 4 
@@ -595,18 +598,25 @@ ${currentContent}
 }
 
 function evaluateAccommodationsDetailed(score: number, lessonPlan: LessonPlan) {
-  const currentContent = lessonPlan.accommodations.join('\n');
+  const allSupports = [
+    ...lessonPlan.specialNeeds.communicationSupport,
+    ...lessonPlan.specialNeeds.learningSupport,
+    ...lessonPlan.specialNeeds.behaviorSupport,
+    ...lessonPlan.specialNeeds.sensorySupport,
+    ...lessonPlan.specialNeeds.participationSupport
+  ];
+  const currentContent = allSupports.join('\n');
   const evidence = [];
-  
-  evidence.push(`교육적 조치 개수: ${lessonPlan.accommodations.length}개`);
+
+  evidence.push(`특수교육 지원 개수: ${allSupports.length}개`);
   
   const supportTypes = ['개별', '시각적', '청각적', '시간', '강화'];
   const usedSupports = supportTypes.filter(type =>
-    lessonPlan.accommodations.some(acc => acc.includes(type))
+    allSupports.some(acc => acc.includes(type))
   );
-  
-  if (usedSupports.length >= 2) {
-    evidence.push(`✓ 다양한 지원 방안: ${usedSupports.join(', ')}`);
+
+  if (allSupports.length >= 2) {
+    evidence.push(`✓ 다양한 지원 방안: ${usedSupports.join(', ') || '특수교육 지원'}`);
   } else {
     evidence.push('✗ 지원 방안 다양성 부족');
   }

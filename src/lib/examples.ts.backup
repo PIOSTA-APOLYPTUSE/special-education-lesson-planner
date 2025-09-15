@@ -197,13 +197,11 @@ export const exampleLessonPlans: ExampleLessonPlan[] = [
       '반복 학습 및 단계적 접근',
       '개별화 교육'
     ],
-    materials: [
-      '숫자 카드 (1-10)',
-      '색깔 블록 30개',
-      '숫자송 음원',
-      '개별 학습지',
-      '보상 스티커'
-    ],
+    materials: {
+      teacher: ['숫자 카드 (1-10)', '색깔 블록 30개', '숫자송 음원'],
+      student: ['개별 학습지', '연필'],
+      assistive: ['보상 스티커', '타이머']
+    },
     activities: [
       {
         phase: '도입',
