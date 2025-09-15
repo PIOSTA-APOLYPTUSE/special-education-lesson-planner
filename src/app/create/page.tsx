@@ -369,17 +369,36 @@ export default function CreateLessonPlan() {
                         required
                       >
                         <option value="">과목 선택</option>
-                        <option value="국어">국어</option>
-                        <option value="수학">수학</option>
-                        <option value="사회">사회</option>
-                        <option value="과학">과학</option>
-                        <option value="영어">영어</option>
-                        <option value="체육">체육</option>
-                        <option value="음악">음악</option>
-                        <option value="미술">미술</option>
-                        <option value="실과">실과</option>
-                        <option value="도덕">도덕</option>
-                        <option value="특수교육">특수교육</option>
+                        <optgroup label="일반 교과">
+                          <option value="국어">국어</option>
+                          <option value="수학">수학</option>
+                          <option value="사회">사회</option>
+                          <option value="과학">과학</option>
+                          <option value="영어">영어</option>
+                          <option value="체육">체육</option>
+                          <option value="음악">음악</option>
+                          <option value="미술">미술</option>
+                          <option value="실과">실과</option>
+                          <option value="도덕">도덕</option>
+                        </optgroup>
+                        <optgroup label="특수교육 기본교육과정">
+                          <option value="생활국어">생활국어</option>
+                          <option value="생활수학">생활수학</option>
+                          <option value="생활사회">생활사회</option>
+                          <option value="생활과학">생활과학</option>
+                          <option value="진로와 직업">진로와 직업</option>
+                          <option value="생활체육">생활체육</option>
+                          <option value="생활음악">생활음악</option>
+                          <option value="생활미술">생활미술</option>
+                          <option value="일상생활 활동">일상생활 활동</option>
+                        </optgroup>
+                        <optgroup label="치료지원">
+                          <option value="언어치료">언어치료</option>
+                          <option value="작업치료">작업치료</option>
+                          <option value="물리치료">물리치료</option>
+                          <option value="청능훈련">청능훈련</option>
+                          <option value="보행훈련">보행훈련</option>
+                        </optgroup>
                         <option value="기타">기타</option>
                       </select>
                     </div>
