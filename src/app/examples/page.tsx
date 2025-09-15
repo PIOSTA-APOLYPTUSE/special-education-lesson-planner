@@ -19,7 +19,6 @@ export default function ExamplesPage() {
     '치료지원': ['언어치료', '작업치료', '물리치료']
   };
 
-  const allCategories = Object.values(categoryGroups).flat();
 
   const filteredExamples = selectedCategory === '전체'
     ? examples
