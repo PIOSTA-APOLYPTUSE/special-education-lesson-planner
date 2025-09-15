@@ -28,29 +28,32 @@ export default function Home() {
 
     // 검색어 필터링
     if (searchTerm) {
-      filtered = filtered.filter(plan =>
-        plan.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        plan.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        plan.grade.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      filtered = filtered.filter(plan => {
+        const title = plan.basicInfo?.title || '';
+        const subject = plan.basicInfo?.subject || '';
+        const grade = plan.basicInfo?.grade || '';
+        return title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               grade.toLowerCase().includes(searchTerm.toLowerCase());
+      });
     }
 
     // 과목 필터링
     if (subjectFilter !== 'all') {
-      filtered = filtered.filter(plan => plan.subject === subjectFilter);
+      filtered = filtered.filter(plan => plan.basicInfo?.subject === subjectFilter);
     }
 
     // 학년 필터링
     if (gradeFilter !== 'all') {
-      filtered = filtered.filter(plan => plan.grade === gradeFilter);
+      filtered = filtered.filter(plan => plan.basicInfo?.grade === gradeFilter);
     }
 
     setFilteredPlans(filtered);
   }, [lessonPlans, searchTerm, subjectFilter, gradeFilter]);
 
   // 고유한 과목과 학년 목록 추출
-  const subjects = [...new Set(lessonPlans.map(plan => plan.subject))];
-  const grades = [...new Set(lessonPlans.map(plan => plan.grade))];
+  const subjects = [...new Set(lessonPlans.map(plan => plan.basicInfo?.subject).filter(Boolean))];
+  const grades = [...new Set(lessonPlans.map(plan => plan.basicInfo?.grade).filter(Boolean))];
 
   const handleDeletePlan = (id: string) => {
     if (confirm("정말로 이 수업지도안을 삭제하시겠습니까?")) {
@@ -318,10 +321,10 @@ export default function Home() {
             <div className="grid gap-4">
               {filteredPlans.map((plan) => (
                 <div key={plan.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                  <h3 className="font-semibold text-gray-800">{plan.title}</h3>
-                  <p className="text-gray-600 text-sm mt-1">{plan.subject} • {plan.grade}</p>
+                  <h3 className="font-semibold text-gray-800">{plan.basicInfo?.title || '수업지도안'}</h3>
+                  <p className="text-gray-600 text-sm mt-1">{plan.basicInfo?.subject || '과목 없음'} • {plan.basicInfo?.grade || '학년 없음'}</p>
                   <p className="text-gray-500 text-xs mt-2 line-clamp-2">
-                    {plan.learningObjectives?.[0] || '학습목표 없음'}
+                    {plan.objectives?.main || '학습목표 없음'}
                   </p>
                   <div className="flex justify-between items-center mt-3">
                     <span className="text-xs text-gray-500">

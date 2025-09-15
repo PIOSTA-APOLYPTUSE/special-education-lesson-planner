@@ -42,16 +42,83 @@ body {
     box-shadow: none !important;
   }
   
+  /* 페이지 설정 */
+  @page {
+    size: A4;
+    margin: 1.5cm;
+  }
+
   body {
     background: white !important;
     color: black !important;
+    font-size: 12pt !important;
+    line-height: 1.4 !important;
   }
-  
+
   * {
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
     print-color-adjust: exact !important;
+    box-shadow: none !important;
   }
+
+  /* 수업지도안 전용 스타일 */
+  .lesson-plan-print {
+    page-break-inside: avoid;
+  }
+
+  .lesson-plan-section {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
+  .lesson-plan-title {
+    font-size: 16pt !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    margin-bottom: 1rem !important;
+    border-bottom: 2px solid black !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  .lesson-plan-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .lesson-plan-table th,
+  .lesson-plan-table td {
+    border: 1px solid black !important;
+    padding: 0.3rem !important;
+    text-align: left !important;
+    vertical-align: top !important;
+    font-size: 10pt !important;
+  }
+
+  .lesson-plan-table th {
+    background-color: #f0f0f0 !important;
+    font-weight: bold !important;
+  }
+
+  /* 버튼 및 네비게이션 숨김 */
+  button, .btn, .navigation, .header-nav, .footer,
+  .print-hide, [class*="hover:"], [class*="focus:"],
+  .bg-gradient-to-br, .shadow-lg {
+    display: none !important;
+  }
+
+  /* 링크 스타일 */
+  a {
+    color: black !important;
+    text-decoration: none !important;
+  }
+
+  /* 텍스트 크기 조정 */
+  h1 { font-size: 18pt !important; }
+  h2 { font-size: 16pt !important; }
+  h3 { font-size: 14pt !important; }
+  h4 { font-size: 12pt !important; }
 }
 
 .line-clamp-2 {
@@ -59,4 +126,46 @@ body {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+/* 접근성 개선 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 포커스 스타일 개선 */
+*:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+  * {
+    border-color: black !important;
+  }
+
+  .bg-blue-50, .bg-green-50, .bg-gray-50 {
+    background-color: white !important;
+    border: 2px solid black !important;
+  }
+}
+
+/* 동작 감소 설정 지원 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

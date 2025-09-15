@@ -85,7 +85,7 @@ export default function EvaluatePage() {
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 수업지도안 전문가 평가
               </h1>
-              <p className="text-gray-600">{lessonPlan.title}</p>
+              <p className="text-gray-600">{lessonPlan.basicInfo?.title || '수업지도안'}</p>
             </div>
             <button
               onClick={() => router.back()}

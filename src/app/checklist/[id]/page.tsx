@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { LessonPlan, loadLessonPlan } from '@/lib/storage';
-import { checkLessonPlan, LessonPlanChecklist, getChecklistByCategory, mandatoryChecklist } from '@/lib/checklist';
+import { checkLessonPlan, LessonPlanChecklist, getChecklistByCategory } from '@/lib/checklist';
 
 export default function ChecklistPage() {
   const params = useParams();
@@ -95,7 +95,7 @@ export default function ChecklistPage() {
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 수업지도안 필수 체크리스트
               </h1>
-              <p className="text-gray-600">{lessonPlan.title}</p>
+              <p className="text-gray-600">{lessonPlan.basicInfo?.title || '수업지도안'}</p>
             </div>
             <button
               onClick={() => router.back()}

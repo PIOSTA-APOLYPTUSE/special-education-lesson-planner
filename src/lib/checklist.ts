@@ -325,116 +325,157 @@ export function checkLessonPlan(lessonPlan: LessonPlan): LessonPlanChecklist {
 function checkIndividualItem(lessonPlan: LessonPlan, item: ChecklistItem): boolean {
   switch (item.id) {
     case 'basic-title':
-      return lessonPlan.title.length > 5;
-    
+      return (lessonPlan.basicInfo?.title || '').length > 5;
+
     case 'basic-subject':
-      return lessonPlan.subject.length > 0;
-    
+      return (lessonPlan.basicInfo?.subject || '').length > 0;
+
     case 'basic-grade':
-      return lessonPlan.grade.length > 0;
-    
+      return (lessonPlan.basicInfo?.grade || '').length > 0;
+
     case 'basic-duration':
-      return lessonPlan.duration > 0;
-    
+      return (lessonPlan.basicInfo?.duration || 0) > 0;
+
     case 'objectives-exist':
-      return lessonPlan.learningObjectives.length >= 2;
-    
+      return (lessonPlan.objectives?.main || '').length > 0;
+
     case 'objectives-specific':
-      return lessonPlan.learningObjectives.some(obj => 
-        obj.includes('할 수 있다') || obj.includes('수 있다')
-      );
-    
+      const mainObjective = lessonPlan.objectives?.main || '';
+      return mainObjective.includes('할 수 있다') || mainObjective.includes('수 있다');
+
     case 'objectives-appropriate':
-      return lessonPlan.learningObjectives.every(obj => obj.length > 10);
-    
+      return (lessonPlan.objectives?.main || '').length > 10;
+
     case 'students-info':
-      return lessonPlan.targetStudents.length > 0;
-    
+      return (lessonPlan.basicInfo?.students?.total || 0) > 0;
+
     case 'students-disability':
-      return lessonPlan.targetStudents.length > 0 && 
-             lessonPlan.targetStudents[0].disability.length > 0;
-    
+      return lessonPlan.specialNeeds?.learningSupport.length > 0;
+
     case 'students-level':
-      return lessonPlan.targetStudents.length > 0 && 
-             lessonPlan.targetStudents[0].currentLevel.length > 5;
-    
+      const hasLevelSupport = lessonPlan.objectives?.byLevel.high ||
+                              lessonPlan.objectives?.byLevel.middle ||
+                              lessonPlan.objectives?.byLevel.low;
+      return Boolean(hasLevelSupport);
+
     case 'students-goals':
-      return lessonPlan.targetStudents.length > 0 && 
-             lessonPlan.targetStudents[0].goals.length > 0;
-    
+      return (lessonPlan.objectives?.main || '').length > 0;
+
     case 'methods-appropriate':
-      return lessonPlan.teachingMethods.length > 0;
-    
+      return lessonPlan.materials?.teacher.length > 0 || lessonPlan.materials?.assistive.length > 0;
+
     case 'methods-multiple':
-      return lessonPlan.teachingMethods.length >= 2;
-    
+      const totalMaterials = (lessonPlan.materials?.teacher.length || 0) +
+                            (lessonPlan.materials?.assistive.length || 0);
+      return totalMaterials >= 2;
+
     case 'methods-evidence':
       const evidenceBasedMethods = ['개별화', '구체물', '다감각', '단계적', '체계적', '반복'];
-      return lessonPlan.teachingMethods.some(method =>
-        evidenceBasedMethods.some(evidence => method.includes(evidence))
+      const allMaterials = [...(lessonPlan.materials?.teacher || []),
+                           ...(lessonPlan.materials?.assistive || [])];
+      return allMaterials.some(material =>
+        evidenceBasedMethods.some(evidence => material.includes(evidence))
       );
     
     case 'materials-list':
-      return lessonPlan.materials.length >= 3;
-    
+      const totalMaterialsCount = (lessonPlan.materials?.teacher.length || 0) +
+                                  (lessonPlan.materials?.student.length || 0) +
+                                  (lessonPlan.materials?.assistive.length || 0);
+      return totalMaterialsCount >= 3;
+
     case 'materials-appropriate':
-      return lessonPlan.materials.every(material => material.length > 2);
-    
+      const allMaterialsList = [...(lessonPlan.materials?.teacher || []),
+                                ...(lessonPlan.materials?.student || []),
+                                ...(lessonPlan.materials?.assistive || [])];
+      return allMaterialsList.every(material => material.length > 2);
+
     case 'materials-accessible':
-      return lessonPlan.materials.some(material => 
-        material.includes('카드') || material.includes('블록') || 
+      const allMaterialsCheck = [...(lessonPlan.materials?.teacher || []),
+                                 ...(lessonPlan.materials?.student || []),
+                                 ...(lessonPlan.materials?.assistive || [])];
+      return allMaterialsCheck.some(material =>
+        material.includes('카드') || material.includes('블록') ||
         material.includes('구체물') || material.includes('교구')
       );
-    
+
     case 'activities-structure':
-      return lessonPlan.activities.length >= 3;
-    
+      const hasIntro = Boolean(lessonPlan.activities?.introduction?.greeting);
+      const hasDev = Boolean(lessonPlan.activities?.development?.activity1?.content);
+      const hasClosure = Boolean(lessonPlan.activities?.closure?.evaluation);
+      return hasIntro && hasDev && hasClosure;
+
     case 'activities-time':
-      const totalTime = lessonPlan.activities.reduce((sum, activity) => sum + activity.time, 0);
-      return Math.abs(totalTime - lessonPlan.duration) <= 5;
-    
+      return (lessonPlan.basicInfo?.duration || 0) > 30;
+
     case 'activities-detailed':
-      return lessonPlan.activities.every(activity => activity.activity.length > 10);
-    
+      const introContent = lessonPlan.activities?.introduction?.greeting || '';
+      const devContent = lessonPlan.activities?.development?.activity1?.content || '';
+      const closureContent = lessonPlan.activities?.closure?.evaluation || '';
+      return [introContent, devContent, closureContent].every(content => content.length > 10);
+
     case 'activities-engagement':
-      return lessonPlan.activities.some(activity => 
-        activity.activity.includes('참여') || activity.activity.includes('활동') ||
-        activity.activity.includes('조작') || activity.activity.includes('발표')
-      );
-    
+      const allActivityContent = [
+        lessonPlan.activities?.introduction?.greeting || '',
+        lessonPlan.activities?.development?.activity1?.content || '',
+        lessonPlan.activities?.development?.activity2?.content || '',
+        lessonPlan.activities?.closure?.evaluation || ''
+      ].join(' ');
+      return allActivityContent.includes('참여') || allActivityContent.includes('활동') ||
+             allActivityContent.includes('조작') || allActivityContent.includes('발표');
+
     case 'assessment-methods':
-      return lessonPlan.assessmentMethods.length > 0;
-    
+      return lessonPlan.evaluation?.criteria.length > 0;
+
     case 'assessment-criteria':
-      return lessonPlan.assessmentMethods.some(method => 
-        method.includes('목표') || method.includes('기준') || method.includes('평가')
+      return lessonPlan.evaluation?.criteria.some(criteria =>
+        criteria.description.includes('목표') || criteria.description.includes('기준') ||
+        criteria.description.includes('평가')
       );
-    
+
     case 'assessment-multiple':
-      return lessonPlan.assessmentMethods.length >= 2;
-    
+      return (lessonPlan.evaluation?.criteria.length || 0) >= 2;
+
     case 'accommodations-list':
-      return lessonPlan.accommodations.length > 0;
-    
+      const totalSupport = (lessonPlan.specialNeeds?.communicationSupport.length || 0) +
+                          (lessonPlan.specialNeeds?.learningSupport.length || 0) +
+                          (lessonPlan.specialNeeds?.behaviorSupport.length || 0);
+      return totalSupport > 0;
+
     case 'accommodations-specific':
-      return lessonPlan.accommodations.every(acc => acc.length > 5);
+      const allSupport = [...(lessonPlan.specialNeeds?.communicationSupport || []),
+                         ...(lessonPlan.specialNeeds?.learningSupport || []),
+                         ...(lessonPlan.specialNeeds?.behaviorSupport || [])];
+      return allSupport.every(support => support.length > 5);
     
     case 'accommodations-individualized':
-      return lessonPlan.accommodations.some(acc => 
-        acc.includes('개별') || acc.includes('개인') || acc.includes('맞춤')
+      const individualizedSupport = [...(lessonPlan.specialNeeds?.communicationSupport || []),
+                                    ...(lessonPlan.specialNeeds?.learningSupport || []),
+                                    ...(lessonPlan.specialNeeds?.behaviorSupport || [])];
+      return individualizedSupport.some(support =>
+        support.includes('개별') || support.includes('개인') || support.includes('맞춤')
       );
-    
+
     case 'safety-considerations':
-      return lessonPlan.notes.includes('안전') || 
-             lessonPlan.accommodations.some(acc => acc.includes('안전'));
-    
+      const safetyInReflection = lessonPlan.evaluation?.reflection?.improvements?.includes('안전') ||
+                                lessonPlan.evaluation?.reflection?.strengths?.includes('안전');
+      const safetyInSupport = [...(lessonPlan.specialNeeds?.learningSupport || []),
+                              ...(lessonPlan.specialNeeds?.behaviorSupport || [])].some(support =>
+                                support.includes('안전')
+                              );
+      return Boolean(safetyInReflection || safetyInSupport);
+
     case 'generalization':
-      return lessonPlan.notes.includes('일반화') || lessonPlan.notes.includes('적용') ||
-             lessonPlan.activities.some(activity => activity.notes?.includes('일반화'));
-    
+      const generalizationInReflection = lessonPlan.evaluation?.reflection?.nextPlans?.includes('일반화') ||
+                                         lessonPlan.evaluation?.reflection?.nextPlans?.includes('적용');
+      return Boolean(generalizationInReflection);
+
     case 'parent-involvement':
-      return lessonPlan.notes.includes('가정') || lessonPlan.notes.includes('부모') ||
-             lessonPlan.accommodations.some(acc => acc.includes('가정'));
+      const parentInReflection = lessonPlan.evaluation?.reflection?.nextPlans?.includes('가정') ||
+                                lessonPlan.evaluation?.reflection?.nextPlans?.includes('부모');
+      const parentInSupport = lessonPlan.specialNeeds?.participationSupport?.some(support =>
+                             support.includes('가정') || support.includes('부모')
+                             );
+      return Boolean(parentInReflection || parentInSupport);
     
     default:
       return false;
